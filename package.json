@@ -1,0 +1,9 @@
+{
+  "name": "ts-compiler",
+  "version": "0.0.0",
+  "description": "TsCompiler",
+  "main": "app.js",
+  "author": {
+    "name": "Administrator"
+  }
+}
