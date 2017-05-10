@@ -1,9 +1,44 @@
 {
-  "name": "ts-compiler",
-  "version": "0.0.0",
-  "description": "TsCompiler",
-  "main": "app.js",
-  "author": {
-    "name": "Administrator"
+  "name": "ts2js",
+  "version": "1.0.0-rc.13",
+  "author": "Todd Thomson <todd.thomson@me.com>",
+  "description": "A simple, fast, extendable Typescript compiler.",
+  "license": "MIT",
+  "main": "./tscompiler.js",
+  "typings": "./tscompiler.d.ts",
+  "dependencies": {
+    "@types/chalk": "^0.4.31",
+    "@types/node": "^6.0.73",
+    "tsbundler": "~1.0.0-rc.4",
+    "typescript": "~2.3.2"
+  },
+  "devDependencies": {
+    "del": "^2.2.2",
+    "gulp": "^3.9.1",
+    "require-dir": "^0.3.1",
+    "run-sequence": "^1.2.2",
+    "typescript": "~2.3.2",
+    "tsbundler": "~1.0.0-rc.4",
+    "tsproject": "~2.1.2",
+    "vinyl-paths": "^2.1.0"
+  },
+  "keywords": [
+    "typescript",
+    "compile",
+    "compiler",
+    "transpiler",
+    "transforms",
+    "plugins",
+    "typescript compiler",
+    "cache optimized compiler"
+  ],
+  "homepage": "https://github.com/toddthomson/ts2js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toddthomson/ts2js.git"
+  },
+  "bugs": "https://github.com/toddthomson/ts2js/issues",
+  "scripts": {
+    "build": "gulp build"
   }
 }

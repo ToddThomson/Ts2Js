@@ -1,0 +1,47 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "declaration": true,
+        "diagnostics": true,
+        "listFiles": false,
+        "pretty": true,
+        "noEmitOnError": false,
+        "noImplicitAny": false,
+        "preserveConstEnums": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "noEmit": false
+    },
+    "files": [
+        "./Compiler/CachingCompilerHost.ts",
+        "./Compiler/CompilerFile.ts",
+        "./Compiler/CompilerOutput.ts",
+        "./Compiler/CompilerResult.ts",
+        "./Compiler/Compiler.ts",
+        
+        "./Project/ProjectConfig.ts",
+
+        "./Transform/IdentityTransform.ts",
+        "./Transform/TransformContext.ts",
+        "./Transform/TransformPlugin.ts",
+
+        "./Utils/TsCore.ts",
+        "./Utils/Utilities.ts",
+        
+        "./TsCompiler.ts"
+    ],
+    
+    "bundles": {
+        "tscompiler": {
+            "files": [ "./TsCompiler.ts" ],
+            "config": {
+                "package": "component",
+                "packageNamespace": "TsCompiler",
+                "outDir": "./bundle",
+                "minify": false
+            }
+        }
+    }
+}

@@ -11,7 +11,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>d1b4acfb-d4fe-4b5e-ac16-be6c21c008f6</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>app.ts</StartupFile>
+    <StartupFile>run.ts</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -31,15 +31,45 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
-    <TypeScriptCompile Include="app.ts" />
+    <Content Include=".gitignore" />
+    <Content Include=".npmignore" />
+    <Content Include=".travis.yml" />
+    <Content Include="LICENSE" />
     <Content Include="package.json" />
     <Content Include="README.md" />
-    <TypeScriptCompile Include="Scripts\typings\node\node.d.ts" />
+    <Content Include="src\tsconfig.json" />
+    <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Scripts\" />
-    <Folder Include="Scripts\typings\" />
-    <Folder Include="Scripts\typings\node\" />
+    <Folder Include="build\" />
+    <Folder Include="build\tasks\" />
+    <Folder Include="src\" />
+    <Folder Include="src\Compiler\" />
+    <Folder Include="src\Project\" />
+    <Folder Include="src\Transform\" />
+    <Folder Include="src\Utils\" />
+  </ItemGroup>
+  <ItemGroup>
+    <TypeScriptCompile Include="run.ts" />
+    <TypeScriptCompile Include="src\Compiler\CachingCompilerHost.ts" />
+    <TypeScriptCompile Include="src\Compiler\Compiler.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompilerFile.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompilerOutput.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompilerResult.ts" />
+    <TypeScriptCompile Include="src\Project\ProjectConfig.ts" />
+    <TypeScriptCompile Include="src\Transform\IdentityTransform.ts" />
+    <TypeScriptCompile Include="src\Transform\TransformContext.ts" />
+    <TypeScriptCompile Include="src\Transform\TransformPlugin.ts" />
+    <TypeScriptCompile Include="src\TsCompiler.ts" />
+    <TypeScriptCompile Include="src\Utils\TsCore.ts" />
+    <TypeScriptCompile Include="src\Utils\Utilities.ts" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="build\paths.js" />
+    <Compile Include="build\tasks\build.js" />
+    <Compile Include="build\tasks\bundle.js" />
+    <Compile Include="build\tasks\clean.js" />
+    <Compile Include="gulpfile.js" />
   </ItemGroup>
   <!-- Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them. -->
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="False" />
