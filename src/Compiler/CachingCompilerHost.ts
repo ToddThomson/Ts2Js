@@ -1,8 +1,5 @@
 ﻿import * as ts from "typescript";
-import * as fs from "fs";
 import * as path from "path";
-
-import { TsCore } from "../Utils/TsCore";
 import { Utils } from "../Utils/Utilities";
 
 export class CachingCompilerHost implements ts.CompilerHost {
@@ -10,9 +7,7 @@ export class CachingCompilerHost implements ts.CompilerHost {
     private output: ts.MapLike<string> = {};
 
     private dirExistsCache: ts.MapLike<boolean> = {};
-    private dirExistsCacheSize: number = 0;
     private fileExistsCache: ts.MapLike<boolean> = {};
-    private fileExistsCacheSize: number = 0;
     private fileReadCache: ts.MapLike<string> = {};
 
     protected compilerOptions: ts.CompilerOptions;
@@ -46,7 +41,6 @@ export class CachingCompilerHost implements ts.CompilerHost {
         if ( Utils.hasProperty( this.fileExistsCache, fileName ) ) {
             return this.fileExistsCache[fileName];
         }
-        this.fileExistsCacheSize++;
 
         return this.fileExistsCache[fileName] = this.baseHost.fileExists( fileName );
     }
@@ -91,8 +85,6 @@ export class CachingCompilerHost implements ts.CompilerHost {
             return this.dirExistsCache[ directoryPath ];
         }
         
-        this.dirExistsCacheSize++;
-
         return this.dirExistsCache[directoryPath] = ts.sys.directoryExists( directoryPath );
     }
 }

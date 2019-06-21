@@ -159,7 +159,7 @@ export class Compiler {
             codeFile: codeFile,
             dtsFile: dtsFile,
             mapFile: mapFile,
-            diagnostics: preEmitDiagnostics.concat( emitResult.diagnostics )
+            diagnostics: preEmitDiagnostics.concat( emitResult.diagnostics as ts.Diagnostic[] )
         };
     }
 }

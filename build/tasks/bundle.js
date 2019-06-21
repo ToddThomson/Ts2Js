@@ -1,24 +1,11 @@
-var gulp = require( 'gulp' );
-var runSequence = require( 'run-sequence' );
-var paths = require( '../paths' );
-var tsb = require( "tsbundler" );
+// Compile gulp task
+'use strict';
 
-var bundlerOptions = {
-    logLevel: 0,
-    verbose: true
-};
+const gulp = require( 'gulp' );
+const paths = require( '../paths' );
+const tsproject = require( 'tsproject' );
 
-gulp.task( 'compile', function() {
-    var bundleBuilder = tsb.builder( paths.sourceTsConfig, bundlerOptions );
-    
-    return bundleBuilder.src( )
+gulp.task( 'bundle', function () {
+    return tsproject.src( paths.sourceTsConfig )
         .pipe( gulp.dest( paths.output ) );
-});
-
-gulp.task( 'bundle', function( done ) {
-    return runSequence(
-        'clean',
-        ['compile'],
-        done
-    );
-});
+} );

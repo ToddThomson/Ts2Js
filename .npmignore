@@ -6,6 +6,7 @@ build
 dist
 obj
 src
+tests
 .gitignore
 .npmignore
 .travis.yml

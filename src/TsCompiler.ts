@@ -1,20 +1,21 @@
-﻿import * as ts from "typescript";
+﻿import * as ts from "typescript"
 
-import { ProjectConfig, Project } from "./Project/ProjectConfig";
-import { Compiler } from "./Compiler/Compiler";
-import { CompilerFile } from "./Compiler/CompilerFile";
-import { CompilerOutput } from "./Compiler/CompilerOutput";
-import { CompilerResult } from "./Compiler/CompilerResult";
-import { TransformPlugin } from "./Transform/TransformPlugin";
+import { ProjectConfig, Project } from "./Project/ProjectConfig"
+import { Compiler } from "./Compiler/Compiler"
+import { CompilerFile } from "./Compiler/CompilerFile"
+import { CompilerOutput } from "./Compiler/CompilerOutput"
+import { CompilerResult } from "./Compiler/CompilerResult"
+import { TransformPlugin } from "./Transform/TransformPlugin"
 
 // Exported types...
-export { CompilerFile };
-export { CompilerOutput };
-export { CompilerResult };
-export { ProjectConfig };
+export { CompilerFile }
+export { CompilerOutput }
+export { CompilerResult }
+export { ProjectConfig }
 
 export namespace TsCompiler {
 
+    // TJT: What does this line do?
     exports.TsCompiler.Compiler = Compiler;
 
     export function compile( fileNames: string[], compilerOptions: ts.CompilerOptions, transform?: TransformPlugin ): CompilerResult {
@@ -49,5 +50,3 @@ export namespace TsCompiler {
 }
 
 module.exports = TsCompiler;
-
-

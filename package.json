@@ -1,26 +1,22 @@
 {
   "name": "ts2js",
-  "version": "1.0.0-rc.13",
+  "version": "3.0.0-rc.1",
   "author": "Todd Thomson <todd.thomson@me.com>",
   "description": "A simple, fast, extendable Typescript compiler.",
   "license": "MIT",
   "main": "./tscompiler.js",
   "typings": "./tscompiler.d.ts",
   "dependencies": {
-    "@types/chalk": "^0.4.31",
-    "@types/node": "^6.0.73",
-    "tsbundler": "~1.0.0-rc.4",
-    "typescript": "~2.3.2"
+    "@types/node": "^10.14.9",
+    "typescript": "^3.5.2"
   },
   "devDependencies": {
-    "del": "^2.2.2",
-    "gulp": "^3.9.1",
-    "require-dir": "^0.3.1",
-    "run-sequence": "^1.2.2",
-    "typescript": "~2.3.2",
-    "tsbundler": "~1.0.0-rc.4",
+    "del": "^4.1.1",
+    "gulp": "^4.0.2",
+    "gulp-hub": "^4.2.0",
     "tsproject": "~2.1.2",
-    "vinyl-paths": "^2.1.0"
+    "typescript": "~3.5.2",
+    "vinyl-paths": "~3.0.0"
   },
   "keywords": [
     "typescript",
@@ -39,6 +35,9 @@
   },
   "bugs": "https://github.com/toddthomson/ts2js/issues",
   "scripts": {
-    "build": "gulp build"
+    "tsc-build": "tsc --build ./src ",
+    "tsc-clean": "tsc --build ./src --clean",
+    "build": "tsc --build ./src && gulp build",
+    "clean": "gulp clean"
   }
 }

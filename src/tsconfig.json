@@ -1,47 +1,53 @@
 {
-    "compilerOptions": {
-        "target": "es5",
-        "module": "commonjs",
-        "moduleResolution": "node",
-        "declaration": true,
-        "diagnostics": true,
-        "listFiles": false,
-        "pretty": true,
-        "noEmitOnError": false,
-        "noImplicitAny": false,
-        "preserveConstEnums": true,
-        "removeComments": false,
-        "sourceMap": true,
-        "noEmit": false
-    },
-    "files": [
-        "./Compiler/CachingCompilerHost.ts",
-        "./Compiler/CompilerFile.ts",
-        "./Compiler/CompilerOutput.ts",
-        "./Compiler/CompilerResult.ts",
-        "./Compiler/Compiler.ts",
-        
-        "./Project/ProjectConfig.ts",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "diagnostics": true,
+    "listFiles": false,
+    "pretty": true,
+    "skipLibCheck": true,
+    "noEmitOnError": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitUseStrict": false,
+    "preserveConstEnums": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "noEmit": false
+  },
+  "compileOnSave": true,
+  "files": [
+    "./Compiler/CachingCompilerHost.ts",
+    "./Compiler/CompilerFile.ts",
+    "./Compiler/CompilerOutput.ts",
+    "./Compiler/CompilerResult.ts",
+    "./Compiler/Compiler.ts",
 
-        "./Transform/IdentityTransform.ts",
-        "./Transform/TransformContext.ts",
-        "./Transform/TransformPlugin.ts",
+    "./Project/ProjectConfig.ts",
 
-        "./Utils/TsCore.ts",
-        "./Utils/Utilities.ts",
-        
-        "./TsCompiler.ts"
-    ],
-    
-    "bundles": {
-        "tscompiler": {
-            "files": [ "./TsCompiler.ts" ],
-            "config": {
-                "package": "component",
-                "packageNamespace": "TsCompiler",
-                "outDir": "./bundle",
-                "minify": false
-            }
-        }
+    "./Transform/IdentityTransform.ts",
+    "./Transform/TransformContext.ts",
+    "./Transform/TransformPlugin.ts",
+
+    "./Utils/TsCore.ts",
+    "./Utils/Utilities.ts",
+
+    "./TsCompiler.ts"
+  ],
+
+  "bundles": {
+    "tscompiler": {
+      "files": [ "./TsCompiler.ts" ],
+      "config": {
+        "package": "component",
+        "packageNamespace": "TsCompiler",
+        "outDir": "./bundle",
+        "minify": false
+      }
     }
+  }
 }
