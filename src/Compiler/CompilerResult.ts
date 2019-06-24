@@ -1,18 +1,12 @@
 ﻿import * as ts from "typescript";
 import { CompilerOutput } from "./CompilerOutput";
 
-//export interface CompilerResult {
-//    emitSkipped: boolean;
-//    emitOutput?: CompilerOutput[];
-//    diagnostics: ts.Diagnostic[];
-//}
-
 export class CompilerResult {
-
     private status: ts.ExitStatus;
     private readonly errors: ReadonlyArray<ts.Diagnostic>
+    private readonly output: ReadonlyArray<CompilerOutput>
 
-    constructor( status: ts.ExitStatus, errors?: ReadonlyArray<ts.Diagnostic> ) {
+    constructor( status: ts.ExitStatus, errors?: ReadonlyArray<ts.Diagnostic>, emitOutput?: CompilerOutput[], ) {
         this.status = status;
         this.errors = errors;
     }
@@ -25,6 +19,9 @@ export class CompilerResult {
         return this.status;
     }
 
+    public getOutput(): ReadonlyArray<CompilerOutput> {
+        return this.output;
+    }
     public succeeded(): boolean {
         return ( this.status === ts.ExitStatus.Success );
     }

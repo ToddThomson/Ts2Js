@@ -1,4 +1,3 @@
-// Compile gulp task
 'use strict';
 
 const gulp = require( 'gulp' );

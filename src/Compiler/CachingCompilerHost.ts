@@ -2,8 +2,10 @@
 import * as path from "path";
 import { Utils } from "../Utils/Utilities";
 
+/**
+ * @description A typescript compiler host that supports incremental builds and optimizations for file reads and file exists functions.Emit output is saved to memory.
+ */
 export class CachingCompilerHost implements ts.CompilerHost {
-
     private output: ts.MapLike<string> = {};
 
     private dirExistsCache: ts.MapLike<boolean> = {};
@@ -22,12 +24,15 @@ export class CachingCompilerHost implements ts.CompilerHost {
         return this.output;
     }
 
-    public getSourceFile = ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile => {
+    public getSourceFileImpl( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
+        // Use baseHost to get the source file
         return this.baseHost.getSourceFile( fileName, languageVersion, onError );
     }
 
+    public getSourceFile = this.getSourceFileImpl;
+
     public writeFile( fileName: string, data: string, writeByteOrderMark: boolean, onError?: ( message: string ) => void ) {
-        this.output[ fileName ] = data;
+        this.output[fileName] = data;
     }
 
     public fileExists = ( fileName: string ): boolean => {
@@ -65,7 +70,7 @@ export class CachingCompilerHost implements ts.CompilerHost {
 
     public getDirectories( path: string ): string[] {
         return this.baseHost.getDirectories( path );
-    } 
+    }
 
     public getCanonicalFileName( fileName: string ) {
         return this.baseHost.getCanonicalFileName( fileName );
@@ -80,11 +85,10 @@ export class CachingCompilerHost implements ts.CompilerHost {
     }
 
     public directoryExists( directoryPath: string ): boolean {
-
         if ( Utils.hasProperty( this.dirExistsCache, directoryPath ) ) {
-            return this.dirExistsCache[ directoryPath ];
+            return this.dirExistsCache[directoryPath];
         }
-        
+
         return this.dirExistsCache[directoryPath] = ts.sys.directoryExists( directoryPath );
     }
 }

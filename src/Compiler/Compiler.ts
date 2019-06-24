@@ -1,26 +1,21 @@
-﻿import { CompilerFile } from "./CompilerFile";
+﻿import * as ts from "typescript";
+import { CompilerFile } from "./CompilerFile";
 import { CompilerOutput } from "./CompilerOutput";
 import { CompilerResult } from "./CompilerResult";
 import { CachingCompilerHost } from "./CachingCompilerHost";
-import { TransformContext } from "../Transform/TransformContext";
-import { TransformPlugin } from "../Transform/TransformPlugin";
-import { IdentityTransform } from "../Transform/IdentityTransform";
+import { TransformPlugins } from "../Transform/TransformPlugin";
 import { TsCore } from "../Utils/TsCore";
-
-import * as ts from "typescript";
-import * as path from "path";
 
 export class Compiler {
     private options: ts.CompilerOptions;
     private host: ts.CompilerHost;
     private program: ts.Program;
-    private plugin: TransformPlugin;
+    private plugins: TransformPlugins;
 
-    private identityTransform: TransformPlugin = new IdentityTransform();
-    
-    constructor( options: ts.CompilerOptions, plugin?: TransformPlugin, host?: ts.CompilerHost, ) {
-        this.options = options? options : ts.getDefaultCompilerOptions();
-        this.plugin = plugin || this.identityTransform;
+    constructor( options: ts.CompilerOptions, program?: ts.Program, host?: ts.CompilerHost, plugins?: TransformPlugins,  ) {
+        this.options = options ? options : ts.getDefaultCompilerOptions();
+        this.plugins = plugins;
+        this.program = program;
         this.host = host || new CachingCompilerHost( options );
     }
 
@@ -34,19 +29,23 @@ export class Compiler {
 
     public compile( fileNames: string[] ): CompilerResult {
         this.program = ts.createProgram( fileNames, this.options, this.host, this.program );
-        
+
         return this.emit();
     }
 
     public compileProgram( program: ts.Program ): CompilerResult {
-        this.program = ts.createProgram( program.getRootFileNames(), this.options, this.host, this.program );
+        this.program = ts.createProgram(
+            program.getRootFileNames(),
+            this.options,
+            this.host,
+            program );
 
         return this.emit()
     }
 
     public compileModule( input: string, moduleFileName: string ): CompilerResult {
         var defaultGetSourceFile: ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ) => ts.SourceFile;
-        
+
         function getSourceFile( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
             if ( fileName === moduleFileName ) {
                 return moduleSourceFile;
@@ -62,69 +61,55 @@ export class Compiler {
 
         //const moduleFileName = this.minifierOptions.moduleFileName || ( this.compilerOptions.jsx ? "module.tsx" : "module.ts");
         const moduleSourceFile = ts.createSourceFile( moduleFileName, input, this.options.target );
-        
+
         this.program = ts.createProgram( [moduleFileName], this.options, this.host, this.program );
-        
+
         return this.emit();
     }
-    
+
     private emit(): CompilerResult {
         var emitOutput: CompilerOutput[] = [];
-        
-        var codeFile: CompilerFile;
-        var mapFile: CompilerFile;
-        var dtsFile: CompilerFile;
+        var diagnostics = ts.getPreEmitDiagnostics( this.program );
 
-        var allDiagnostics = ts.getPreEmitDiagnostics( this.program );
-                    
-        if ( this.options.noEmit || ( this.options.noEmitOnError && ( allDiagnostics.length > 0 ) ) ) {
-            return { 
-                diagnostics: allDiagnostics,
-                emitSkipped: true 
-            }; 
+        if ( this.options.noEmitOnError && ( diagnostics.length > 0 ) ) {
+            return new CompilerResult( ts.ExitStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
         }
 
         const fileNames = this.program.getRootFileNames();
 
         for ( const fileNameIndex in fileNames ) {
-            let sourceFile = this.program.getSourceFile( fileNames[ fileNameIndex ] );
-            
+            let sourceFile = this.program.getSourceFile( fileNames[fileNameIndex] );
+
             let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.program, sourceFile );
 
             if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
-                emitOutput.push( { 
-                    fileName: fileNames[ fileNameIndex ],
+                emitOutput.push( {
+                    fileName: fileNames[fileNameIndex],
                     emitSkipped: true,
-                    diagnostics: preEmitDiagnostics } );
-                
+                    diagnostics: preEmitDiagnostics
+                } );
+
                 continue;
             }
 
-            // Apply transform before emit..
+            // TJT: TODO: Pass transforms to ts.emit()
 
-            const context: TransformContext = {
-                getHost: () => this.host,
-                getProgram: () => this.program
-            };
+            //// Apply transform before emit..
+            //const context: TransformContext = {
+            //    getHost: () => this.host,
+            //    getProgram: () => this.program
+            //};
 
-            var transform = this.plugin.transform( context );
+            //var transform = this.plugins.transform( context );
 
-            const transformedSourceFile = transform( sourceFile );
+            //const transformedSourceFile = transform( sourceFile );
 
-            var emitResult = this.fileEmit( fileNames[ fileNameIndex ], transformedSourceFile );
-
-            if ( context.onPostEmit ) {
-                context.onPostEmit( emitResult );
-            }
+            var emitResult = this.fileEmit( fileNames[fileNameIndex], sourceFile );
 
             emitOutput.push( emitResult );
         }
 
-        return {
-            emitSkipped: false,
-            emitOutput: emitOutput,
-            diagnostics: allDiagnostics
-        }
+        return new CompilerResult( ts.ExitStatus.Success, diagnostics, emitOutput );
     }
 
     private fileEmit( fileName: string, sourceFile: ts.SourceFile ): CompilerOutput {
@@ -135,23 +120,24 @@ export class Compiler {
         let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.program, sourceFile );
 
         if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
-            return { 
+            return {
                 fileName: fileName,
                 emitSkipped: true,
-                diagnostics: preEmitDiagnostics };
+                diagnostics: preEmitDiagnostics
+            };
         }
 
         const emitResult = this.program.emit( sourceFile, ( fileName: string, data: string, writeByteOrderMark: boolean ) => {
-                var file: CompilerFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
+            var file: CompilerFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
 
-                if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
-                    codeFile = file;
-                } else if ( TsCore.fileExtensionIs( fileName, "d.ts" ) ) {
-                    dtsFile = file;
-                } else if ( TsCore.fileExtensionIs( fileName, ".map" ) ) {
-                    mapFile = file;
-                }
-		    });
+            if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
+                codeFile = file;
+            } else if ( TsCore.fileExtensionIs( fileName, "d.ts" ) ) {
+                dtsFile = file;
+            } else if ( TsCore.fileExtensionIs( fileName, ".map" ) ) {
+                mapFile = file;
+            }
+        }, /*cancellationToken*/ undefined, /*emitOnlyDtsFiles*/ false, this.plugins.transforms );
 
         return {
             fileName: fileName,

@@ -3,6 +3,7 @@ bin
 node_modules/*
 obj
 dist/*
+built/*
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts

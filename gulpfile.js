@@ -1,7 +1,8 @@
 ﻿'use strict';
 
-var gulp = require( 'gulp' );
-var registry = require( 'gulp-hub' );
+const gulp = require( 'gulp' );
+const paths = require( './build/paths' );
+const registry = require( 'gulp-hub' );
 
 /* Load our build tasks into the registry */
 var hub = new registry( ['./build/tasks/*.js'] );
@@ -9,5 +10,11 @@ var hub = new registry( ['./build/tasks/*.js'] );
 gulp.registry( hub );
 
 gulp.task( 'build', gulp.series( 'clean', 'bundle' ), function ( cb ) {
+    cb();
+} );
+
+gulp.task( 'release', gulp.series( 'build' ), function ( cb ) {
+    gulp.src( [paths.main, paths.typings] )
+        .pipe( gulp.dest( paths.release ) );
     cb();
 } );
