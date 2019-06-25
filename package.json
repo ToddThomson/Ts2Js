@@ -1,6 +1,6 @@
 {
   "name": "ts2js",
-  "version": "3.0.0-beta.3",
+  "version": "3.0.0-beta.4",
   "author": "Todd Thomson <todd.thomson@me.com>",
   "description": "A simple, fast, extendable Typescript compiler.",
   "license": "MIT",

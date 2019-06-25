@@ -52,6 +52,9 @@
   <ItemGroup>
     <TypeScriptCompile Include="lib\TsCompiler.d.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerError.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompileStatus.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\Compiler\CompileStream.ts" />
     <TypeScriptCompile Include="src\Compiler\TsCompilerOptions.ts" />
     <TypeScriptCompile Include="src\Compiler\WatchCompilerHost.ts" />

@@ -1,4 +1,5 @@
 import * as ts from "typescript";
+import * as stream from "stream";
 interface CompilerFile {
     fileName: string;
     data: string;
@@ -12,18 +13,20 @@ interface CompilerOutput {
     dtsFile?: CompilerFile;
     mapFile?: CompilerFile;
 }
+declare enum CompileStatus {
+    Success = 0,
+    DiagnosticsPresent_OutputsSkipped = 1,
+    DiagnosticsPresent_OutputsGenerated = 2,
+}
 declare class CompilerResult {
     private status;
     private readonly errors;
     private readonly output;
-    constructor(status: ts.ExitStatus, errors?: ReadonlyArray<ts.Diagnostic>, emitOutput?: CompilerOutput[]);
+    constructor(status: CompileStatus, errors?: ReadonlyArray<ts.Diagnostic>, emitOutput?: CompilerOutput[]);
     getErrors(): ReadonlyArray<ts.Diagnostic>;
-    getStatus(): ts.ExitStatus;
+    getStatus(): CompileStatus;
     getOutput(): ReadonlyArray<CompilerOutput>;
     succeeded(): boolean;
-}
-interface TransformPlugins {
-    transforms: ts.CustomTransformers;
 }
 interface ProjectConfig {
     success: boolean;
@@ -35,8 +38,8 @@ declare class Compiler {
     private options;
     private host;
     private program;
-    private plugins;
-    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, plugins?: TransformPlugins);
+    private transforms;
+    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, transforms?: ts.CustomTransformers);
     getHost(): ts.CompilerHost;
     getProgram(): ts.Program;
     compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompilerResult;
@@ -44,16 +47,21 @@ declare class Compiler {
     private emit();
     private fileEmit(fileName, sourceFile);
 }
+declare class CompileStream extends stream.Readable {
+    constructor(opts?: stream.ReadableOptions);
+    _read(): void;
+}
 export { CompilerFile };
 export { CompilerOutput };
+export { CompileStatus };
 export { CompilerResult };
-export { TransformPlugins };
+export { CompileStream };
 export { ProjectConfig };
 export { Compiler };
 export declare namespace TsCompiler {
-    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: TransformPlugins): CompilerResult;
-    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: TransformPlugins): CompilerResult;
-    function compileProject(configFilePath: string, transforms?: TransformPlugins): CompilerResult;
+    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
+    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
+    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompilerResult;
     namespace ProjectHelper {
         function getProjectConfig(configFilePath: string): ProjectConfig;
     }
