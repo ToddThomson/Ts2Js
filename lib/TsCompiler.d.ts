@@ -31,15 +31,28 @@ interface ProjectConfig {
     fileNames?: string[];
     diagnostics?: ts.Diagnostic[];
 }
+declare class Compiler {
+    private options;
+    private host;
+    private program;
+    private plugins;
+    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, plugins?: TransformPlugins);
+    getHost(): ts.CompilerHost;
+    getProgram(): ts.Program;
+    compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompilerResult;
+    compileModule(input: string, moduleFileName: string): CompilerResult;
+    private emit();
+    private fileEmit(fileName, sourceFile);
+}
 export { CompilerFile };
 export { CompilerOutput };
 export { CompilerResult };
 export { TransformPlugins };
 export { ProjectConfig };
+export { Compiler };
 export declare namespace TsCompiler {
-    function compile(fileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: TransformPlugins): CompilerResult;
+    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: TransformPlugins): CompilerResult;
     function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: TransformPlugins): CompilerResult;
-    function compileProgram(program: ts.Program, transform?: TransformPlugins): CompilerResult;
     function compileProject(configFilePath: string, transforms?: TransformPlugins): CompilerResult;
     namespace ProjectHelper {
         function getProjectConfig(configFilePath: string): ProjectConfig;

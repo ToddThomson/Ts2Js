@@ -1,8 +1,8 @@
 var path = require( 'path' );
 
 var sourceRoot = 'src/';
-var buildRoot = 'built/';
-var releaseRoot = 'lib/';
+var buildRoot = './built/';
+var releaseRoot = './lib/';
 var bundleRoot =  'bundle/'
 var testRoot = 'tests/'
 

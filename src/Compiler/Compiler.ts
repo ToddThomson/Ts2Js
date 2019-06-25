@@ -12,11 +12,11 @@ export class Compiler {
     private program: ts.Program;
     private plugins: TransformPlugins;
 
-    constructor( options: ts.CompilerOptions, program?: ts.Program, host?: ts.CompilerHost, plugins?: TransformPlugins,  ) {
+    constructor( options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, plugins?: TransformPlugins ) {
         this.options = options ? options : ts.getDefaultCompilerOptions();
         this.plugins = plugins;
-        this.program = program;
         this.host = host || new CachingCompilerHost( options );
+        this.program = program;
     }
 
     public getHost(): ts.CompilerHost {
@@ -27,20 +27,10 @@ export class Compiler {
         return this.program;
     }
 
-    public compile( fileNames: string[] ): CompilerResult {
-        this.program = ts.createProgram( fileNames, this.options, this.host, this.program );
+    public compile( rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program ): CompilerResult {
+        this.program = ts.createProgram( rootFileNames, this.options, this.host, oldProgram );
 
         return this.emit();
-    }
-
-    public compileProgram( program: ts.Program ): CompilerResult {
-        this.program = ts.createProgram(
-            program.getRootFileNames(),
-            this.options,
-            this.host,
-            program );
-
-        return this.emit()
     }
 
     public compileModule( input: string, moduleFileName: string ): CompilerResult {

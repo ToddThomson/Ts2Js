@@ -9,12 +9,5 @@ var hub = new registry( ['./build/tasks/*.js'] );
 
 gulp.registry( hub );
 
-gulp.task( 'build', gulp.series( 'clean', 'bundle' ), function ( cb ) {
-    cb();
-} );
-
-gulp.task( 'release', gulp.series( 'build' ), function ( cb ) {
-    gulp.src( [paths.main, paths.typings] )
-        .pipe( gulp.dest( paths.release ) );
-    cb();
+gulp.task( 'build', gulp.series( 'clean', 'bundle', 'release' ), function () {
 } );

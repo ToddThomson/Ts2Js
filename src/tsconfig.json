@@ -29,6 +29,7 @@
     "./Compiler/CompilerResult.ts",
     "./Compiler/CompileStream.ts",
     "./Compiler/TsCompilerOptions.ts",
+    "./Compiler/WatchCompilerHost.ts",
 
     "./Project/ProjectConfig.ts",
 
