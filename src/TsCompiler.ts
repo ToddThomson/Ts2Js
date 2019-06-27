@@ -1,6 +1,5 @@
 ﻿import * as ts from "typescript"
-
-import { ProjectConfig, Project } from "./Project/ProjectConfig"
+import { CachingCompilerHost } from "./Compiler/CachingCompilerHost"
 import { Compiler } from "./Compiler/Compiler"
 import { CompilerFile } from "./Compiler/CompilerFile"
 import { CompilerOutput } from "./Compiler/CompilerOutput"
@@ -9,12 +8,12 @@ import { CompileStatus } from "./Compiler/CompileStatus"
 import { CompileStream } from "./Compiler/CompileStream"
 
 // Exported types...
+export { CachingCompilerHost }
 export { CompilerFile }
 export { CompilerOutput }
 export { CompileStatus }
 export { CompilerResult }
 export { CompileStream }
-export { ProjectConfig }
 export { Compiler }
 
 export namespace TsCompiler {
@@ -32,18 +31,4 @@ export namespace TsCompiler {
 
         return compiler.compileModule( input, moduleFileName );
     }
-
-    export function compileProject( configFilePath: string, transforms?: ts.CustomTransformers ): CompilerResult {
-        const config = Project.getProjectConfig( configFilePath );
-
-        return compile( config.fileNames, config.compilerOptions, transforms );
-    }
-
-    export namespace ProjectHelper {
-        export function getProjectConfig( configFilePath: string ): ProjectConfig {
-            return Project.getProjectConfig( configFilePath );
-        }
-    }
 }
-
-module.exports = TsCompiler;

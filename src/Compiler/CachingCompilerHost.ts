@@ -1,9 +1,11 @@
 ﻿import * as ts from "typescript";
 import * as path from "path";
-import { Utils } from "../Utils/Utilities";
+import { Utils } from "@TsToolsCommon/Utils/Utilities";
 
 /**
- * @description A typescript compiler host that supports incremental builds and optimizations for file reads and file exists functions.Emit output is saved to memory.
+ * @description A typescript compiler host that supports incremental builds and optimizations
+ * for file reads and file exists functions.
+ * Emit output is saved to memory.
  */
 export class CachingCompilerHost implements ts.CompilerHost {
     private output: ts.MapLike<string> = {};

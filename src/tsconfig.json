@@ -1,4 +1,6 @@
 {
+  "compileOnSave": true,
+
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
@@ -17,28 +19,19 @@
     "noImplicitUseStrict": false,
     "preserveConstEnums": true,
     "removeComments": false,
-    "noEmit": false
+    "noEmit": false,
+    "baseUrl": ".",
+    "paths": {
+      "@TsToolsCommon/*": [ "../../TsToolsCommon/src/*" ]
+    }
   },
-  "compileOnSave": true,
-  "files": [
-    "./Compiler/CachingCompilerHost.ts",
-    "./Compiler/Compiler.ts",
-    "./Compiler/CompilerError.ts",
-    "./Compiler/CompilerFile.ts",
-    "./Compiler/CompilerOutput.ts",
-    "./Compiler/CompilerResult.ts",
-    "./Compiler/CompileStream.ts",
-    "./Compiler/TsCompilerOptions.ts",
-    "./Compiler/WatchCompilerHost.ts",
 
-    "./Project/ProjectConfig.ts",
+  "include": [
+    "./**/*.ts"
+  ],
 
-    "./Transform/TransformPlugin.ts",
-
-    "./Utils/TsCore.ts",
-    "./Utils/Utilities.ts",
-
-    "./TsCompiler.ts"
+  "exclude": [
+    "node_modules"
   ],
 
   "bundles": {

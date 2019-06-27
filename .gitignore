@@ -4,6 +4,7 @@ node_modules/*
 obj
 dist/*
 built/*
+TsToolsCommon/*
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts

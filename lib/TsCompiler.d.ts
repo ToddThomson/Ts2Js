@@ -28,11 +28,27 @@ declare class CompilerResult {
     getOutput(): ReadonlyArray<CompilerOutput>;
     succeeded(): boolean;
 }
-interface ProjectConfig {
-    success: boolean;
-    compilerOptions?: ts.CompilerOptions;
-    fileNames?: string[];
-    diagnostics?: ts.Diagnostic[];
+declare class CachingCompilerHost implements ts.CompilerHost {
+    private output;
+    private dirExistsCache;
+    private fileExistsCache;
+    private fileReadCache;
+    protected compilerOptions: ts.CompilerOptions;
+    private baseHost;
+    constructor(compilerOptions: ts.CompilerOptions);
+    getOutput(): ts.MapLike<string>;
+    getSourceFileImpl(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile;
+    getSourceFile: (fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void) => ts.SourceFile;
+    writeFile(fileName: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void): void;
+    fileExists: (fileName: string) => boolean;
+    readFile(fileName: string): string;
+    getDefaultLibFileName(options: ts.CompilerOptions): string;
+    getCurrentDirectory(): string;
+    getDirectories(path: string): string[];
+    getCanonicalFileName(fileName: string): string;
+    useCaseSensitiveFileNames(): boolean;
+    getNewLine(): string;
+    directoryExists(directoryPath: string): boolean;
 }
 declare class Compiler {
     private options;
@@ -51,18 +67,14 @@ declare class CompileStream extends stream.Readable {
     constructor(opts?: stream.ReadableOptions);
     _read(): void;
 }
+export { CachingCompilerHost };
 export { CompilerFile };
 export { CompilerOutput };
 export { CompileStatus };
 export { CompilerResult };
 export { CompileStream };
-export { ProjectConfig };
 export { Compiler };
 export declare namespace TsCompiler {
     function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
     function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
-    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompilerResult;
-    namespace ProjectHelper {
-        function getProjectConfig(configFilePath: string): ProjectConfig;
-    }
 }

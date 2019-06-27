@@ -4,8 +4,7 @@ import { CompilerOutput } from "./CompilerOutput";
 import { CompilerResult } from "./CompilerResult";
 import { CompileStatus } from "./CompileStatus";
 import { CachingCompilerHost } from "./CachingCompilerHost";
-import { TransformPlugins } from "../Transform/TransformPlugin";
-import { TsCore } from "../Utils/TsCore";
+import { TsCore } from "@TsToolsCommon/Utils/TsCore";
 
 export class Compiler {
     private options: ts.CompilerOptions;

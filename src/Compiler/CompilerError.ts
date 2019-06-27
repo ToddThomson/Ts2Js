@@ -1,7 +1,6 @@
-﻿import ts = require ( "typescript" );
+﻿import * as ts from "typescript";
 
 export class CompilerError {
-
     private fileName: string;
     private line: number;
     private column: number;
@@ -9,7 +8,6 @@ export class CompilerError {
     private message: any;
 
     constructor( info: ts.Diagnostic ) {
-
         var startPos = info.file.getLineAndCharacterOfPosition( info.start );
 
         this.fileName = info.file.fileName;

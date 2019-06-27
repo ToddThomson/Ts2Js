@@ -56,19 +56,13 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\Compiler\CompileStream.ts" />
-    <TypeScriptCompile Include="src\Compiler\TsCompilerOptions.ts" />
-    <TypeScriptCompile Include="src\Compiler\WatchCompilerHost.ts" />
     <TypeScriptCompile Include="tests\run.ts" />
     <TypeScriptCompile Include="src\Compiler\CachingCompilerHost.ts" />
     <TypeScriptCompile Include="src\Compiler\Compiler.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerFile.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerOutput.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerResult.ts" />
-    <TypeScriptCompile Include="src\Project\ProjectConfig.ts" />
-    <TypeScriptCompile Include="src\Transform\TransformPlugin.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
-    <TypeScriptCompile Include="src\Utils\TsCore.ts" />
-    <TypeScriptCompile Include="src\Utils\Utilities.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -77,9 +71,6 @@
     <Folder Include="tests\" />
     <Folder Include="src\" />
     <Folder Include="src\Compiler\" />
-    <Folder Include="src\Project\" />
-    <Folder Include="src\Transform\" />
-    <Folder Include="src\Utils\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>
