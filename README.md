@@ -4,7 +4,9 @@
 ts2js is a simple, fast, extendable Typescript compiler.
 
 ## Top Features
-* Extendable through transform plugins
+* Compiles projects, files and modules
+* Transpiles modules
+* Supports Typescript transformers
 * Fast, cache optimized, memory based builds
 * Supports the latest version of Typescript 3.5
 

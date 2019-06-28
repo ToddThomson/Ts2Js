@@ -1,5 +1,4 @@
 ﻿import * as ts from "typescript"
-import * as project from "tsproject"
 import { CachingCompilerHost } from "./Compiler/CachingCompilerHost"
 import { Compiler } from "./Compiler/Compiler"
 import { CompilerFile } from "./Compiler/CompilerFile"
@@ -7,6 +6,7 @@ import { CompilerOutput } from "./Compiler/CompilerOutput"
 import { CompilerResult } from "./Compiler/CompilerResult"
 import { CompileStatus } from "./Compiler/CompileStatus"
 import { CompileStream } from "./Compiler/CompileStream"
+import { TsCore } from "@TsToolsCommon/Utils/TsCore"
 
 // Exported types...
 export { CachingCompilerHost }
@@ -31,11 +31,13 @@ export namespace TsCompiler {
         return compiler.compileModule( input, moduleFileName );
     }
 
-    // TJT: Add when TsProject 3 can build bundles...
+    export function compileProject( configFilePath: string, transforms?: ts.CustomTransformers ): CompilerResult {
+        const config = TsCore.getProjectConfig( configFilePath );
 
-    //export function compileProject( configFilePath: string, transforms?: ts.CustomTransformers ): CompilerResult {
-    //    const config = Project.getProjectConfig( configFilePath );
+        return compile( config.fileNames, config.options, transforms );
+    }
 
-    //    return compile( config.fileNames, config.compilerOptions, transforms );
-    //}
+    export function transpileModule( input: string, options: ts.TranspileOptions ): ts.TranspileOutput {
+        return ts.transpileModule( input, options );
+    }
 }

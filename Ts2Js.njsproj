@@ -52,6 +52,7 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\tsconfig.json" />
+    <Content Include="tests\projects\simple\tsconfig.json" />
     <Content Include="tests\tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
@@ -73,12 +74,18 @@
     <TypeScriptCompile Include="tests\CompileModule\CompileModuleTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\CompileProject\CompileProjectTests.ts" />
+    <TypeScriptCompile Include="tests\CompileProject\CompileProjectWithTransformsTests.ts" />
+    <TypeScriptCompile Include="tests\projects\simple\GreeterModule.ts" />
+    <TypeScriptCompile Include="tests\projects\simple\main.ts" />
     <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\transforms\IdentityTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\Transpile\TranspileModuleTests.ts" />
+    <TypeScriptCompile Include="tests\Transpile\TranspileModuleWithTransformsTests.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -88,6 +95,10 @@
     <Folder Include="src\" />
     <Folder Include="src\Compiler\" />
     <Folder Include="tests\CompileModule\" />
+    <Folder Include="tests\CompileProject\" />
+    <Folder Include="tests\Transpile\" />
+    <Folder Include="tests\projects\" />
+    <Folder Include="tests\projects\simple\" />
     <Folder Include="tests\transforms\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

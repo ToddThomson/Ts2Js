@@ -76,4 +76,6 @@ export { Compiler };
 export declare namespace TsCompiler {
     function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
     function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
+    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompilerResult;
+    function transpileModule(input: string, options: ts.TranspileOptions): ts.TranspileOutput;
 }

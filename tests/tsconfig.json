@@ -19,7 +19,8 @@
     ],
     "types": [
       "node",
-      "mocha"
+      "mocha",
+      "chai"
     ],
     "baseUrl": ".",
     "paths": {

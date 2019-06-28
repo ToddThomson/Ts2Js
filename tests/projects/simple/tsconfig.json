@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "noEmitOnError": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules"
+    ],
+    "types": [
+      "node",
+      "typescript"
+    ]
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
