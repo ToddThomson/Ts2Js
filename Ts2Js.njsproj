@@ -8,6 +8,9 @@
     <SccProvider>SAK</SccProvider>
     <SccAuxPath>SAK</SccAuxPath>
     <SccLocalPath>SAK</SccLocalPath>
+    <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
+    <JavaScriptTestFramework>mocha</JavaScriptTestFramework>
+    <JavaScriptTestRoot>tests\</JavaScriptTestRoot>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -15,7 +18,8 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0400168f-4110-4068-a889-a7db636b7c24</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>tests\run.ts</StartupFile>
+    <StartupFile>
+    </StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -24,7 +28,7 @@
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
     <EnableTypeScript>true</EnableTypeScript>
-    <StartWebBrowser>false</StartWebBrowser>
+    <StartWebBrowser>False</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -38,6 +42,7 @@
     <Content Include=".npmignore" />
     <Content Include=".travis.yml" />
     <Content Include="build\paths.js" />
+    <Content Include="build\tasks\test.js" />
     <Content Include="build\tasks\release.js" />
     <Content Include="build\tasks\bundle.js" />
     <Content Include="build\tasks\clean.js" />
@@ -56,13 +61,24 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\Compiler\CompileStream.ts" />
-    <TypeScriptCompile Include="tests\run.ts" />
     <TypeScriptCompile Include="src\Compiler\CachingCompilerHost.ts" />
     <TypeScriptCompile Include="src\Compiler\Compiler.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerFile.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerOutput.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerResult.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
+    <TypeScriptCompile Include="tests\CompileModule\CompileModuleWithTransformsTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\CompileModule\CompileModuleTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\transforms\IdentityTransform.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -71,6 +87,8 @@
     <Folder Include="tests\" />
     <Folder Include="src\" />
     <Folder Include="src\Compiler\" />
+    <Folder Include="tests\CompileModule\" />
+    <Folder Include="tests\transforms\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
   <ProjectExtensions>

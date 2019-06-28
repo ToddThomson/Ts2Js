@@ -1,0 +1,38 @@
+﻿{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noLib": false,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "pretty": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "typeRoots": [
+      "./node_modules/@types",
+      "./node_modules"
+    ],
+    "types": [
+      "node",
+      "mocha"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "@TsToolsCommon/*": [ "../../TsToolsCommon/src/*" ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "obj",
+    "dist",
+    "build",
+    "built",
+    "src"
+  ],
+  "compileOnSave": true
+}

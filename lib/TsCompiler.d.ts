@@ -36,19 +36,18 @@ declare class CachingCompilerHost implements ts.CompilerHost {
     protected compilerOptions: ts.CompilerOptions;
     private baseHost;
     constructor(compilerOptions: ts.CompilerOptions);
-    getOutput(): ts.MapLike<string>;
-    getSourceFileImpl(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile;
-    getSourceFile: (fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void) => ts.SourceFile;
-    writeFile(fileName: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void): void;
+    getOutput: () => ts.MapLike<string>;
+    writeFile: (fileName: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void) => void;
+    directoryExists: (directoryPath: string) => boolean;
     fileExists: (fileName: string) => boolean;
-    readFile(fileName: string): string;
-    getDefaultLibFileName(options: ts.CompilerOptions): string;
-    getCurrentDirectory(): string;
-    getDirectories(path: string): string[];
-    getCanonicalFileName(fileName: string): string;
-    useCaseSensitiveFileNames(): boolean;
-    getNewLine(): string;
-    directoryExists(directoryPath: string): boolean;
+    readFile: (fileName: string) => string;
+    getSourceFile: (fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void) => ts.SourceFile;
+    getDefaultLibFileName: (options: ts.CompilerOptions) => string;
+    getCurrentDirectory: () => string;
+    getDirectories: (path: string) => string[];
+    getCanonicalFileName: (fileName: string) => string;
+    useCaseSensitiveFileNames: () => boolean;
+    getNewLine: () => string;
 }
 declare class Compiler {
     private options;

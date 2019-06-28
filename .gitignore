@@ -8,7 +8,9 @@ TsToolsCommon/*
 src/**/*.js
 src/**/*.js.map
 src/**/*.d.ts
-tests/*
+tests/**/*.js
+tests/**/*.js.map
+tests/**/*.d.ts
 ts2js.js
 *.dat
 *.njsproj.user

@@ -22,19 +22,20 @@ export class CachingCompilerHost implements ts.CompilerHost {
         this.baseHost = ts.createCompilerHost( this.compilerOptions );
     }
 
-    public getOutput() {
+    public getOutput = () => {
         return this.output;
     }
 
-    public getSourceFileImpl( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
-        // Use baseHost to get the source file
-        return this.baseHost.getSourceFile( fileName, languageVersion, onError );
+    public writeFile = ( fileName: string, data: string, writeByteOrderMark: boolean, onError?: ( message: string ) => void ) => {
+        this.output[fileName] = data;
     }
 
-    public getSourceFile = this.getSourceFileImpl;
+    public directoryExists = ( directoryPath: string ): boolean => {
+        if ( Utils.hasProperty( this.dirExistsCache, directoryPath ) ) {
+            return this.dirExistsCache[directoryPath];
+        }
 
-    public writeFile( fileName: string, data: string, writeByteOrderMark: boolean, onError?: ( message: string ) => void ) {
-        this.output[fileName] = data;
+        return this.dirExistsCache[directoryPath] = ts.sys.directoryExists( directoryPath );
     }
 
     public fileExists = ( fileName: string ): boolean => {
@@ -52,7 +53,7 @@ export class CachingCompilerHost implements ts.CompilerHost {
         return this.fileExistsCache[fileName] = this.baseHost.fileExists( fileName );
     }
 
-    public readFile( fileName: string ): string {
+    public readFile = ( fileName: string ): string => {
         if ( Utils.hasProperty( this.fileReadCache, fileName ) ) {
             return this.fileReadCache[fileName];
         }
@@ -61,36 +62,31 @@ export class CachingCompilerHost implements ts.CompilerHost {
     }
 
     // Use Typescript CompilerHost "base class" implementation..
+    public getSourceFile = ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile => {
+        return this.baseHost.getSourceFile( fileName, languageVersion, onError );
+    }
 
-    public getDefaultLibFileName( options: ts.CompilerOptions ) {
+    public getDefaultLibFileName = ( options: ts.CompilerOptions ) => {
         return this.baseHost.getDefaultLibFileName( options );
     }
 
-    public getCurrentDirectory() {
+    public getCurrentDirectory = () => {
         return this.baseHost.getCurrentDirectory();
     }
 
-    public getDirectories( path: string ): string[] {
+    public getDirectories = ( path: string ): string[] => {
         return this.baseHost.getDirectories( path );
     }
 
-    public getCanonicalFileName( fileName: string ) {
+    public getCanonicalFileName = ( fileName: string ) => {
         return this.baseHost.getCanonicalFileName( fileName );
     }
 
-    public useCaseSensitiveFileNames() {
+    public useCaseSensitiveFileNames = () => {
         return this.baseHost.useCaseSensitiveFileNames();
     }
 
-    public getNewLine() {
+    public getNewLine = () => {
         return this.baseHost.getNewLine();
-    }
-
-    public directoryExists( directoryPath: string ): boolean {
-        if ( Utils.hasProperty( this.dirExistsCache, directoryPath ) ) {
-            return this.dirExistsCache[directoryPath];
-        }
-
-        return this.dirExistsCache[directoryPath] = ts.sys.directoryExists( directoryPath );
     }
 }

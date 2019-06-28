@@ -49,7 +49,6 @@ export class Compiler {
         defaultGetSourceFile = this.host.getSourceFile;
         this.host.getSourceFile = getSourceFile;
 
-        //const moduleFileName = this.minifierOptions.moduleFileName || ( this.compilerOptions.jsx ? "module.tsx" : "module.ts");
         const moduleSourceFile = ts.createSourceFile( moduleFileName, input, this.options.target );
 
         this.program = ts.createProgram( [moduleFileName], this.options, this.host, this.program );
