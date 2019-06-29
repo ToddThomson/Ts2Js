@@ -10,7 +10,7 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SaveNodeJsSettingsInProjectFile>True</SaveNodeJsSettingsInProjectFile>
     <JavaScriptTestFramework>mocha</JavaScriptTestFramework>
-    <JavaScriptTestRoot>tests\</JavaScriptTestRoot>
+    <JavaScriptTestRoot>tests\spec\</JavaScriptTestRoot>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -68,14 +68,14 @@
     <TypeScriptCompile Include="src\Compiler\CompilerOutput.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerResult.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
-    <TypeScriptCompile Include="tests\CompileModule\CompileModuleWithTransformsTests.ts">
+    <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleWithTransformsTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\CompileModule\CompileModuleTests.ts">
+    <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\CompileProject\CompileProjectTests.ts" />
-    <TypeScriptCompile Include="tests\CompileProject\CompileProjectWithTransformsTests.ts" />
+    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectTests.ts" />
+    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectWithTransformsTests.ts" />
     <TypeScriptCompile Include="tests\projects\simple\GreeterModule.ts" />
     <TypeScriptCompile Include="tests\projects\simple\main.ts" />
     <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
@@ -84,8 +84,8 @@
     <TypeScriptCompile Include="tests\transforms\IdentityTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\Transpile\TranspileModuleTests.ts" />
-    <TypeScriptCompile Include="tests\Transpile\TranspileModuleWithTransformsTests.ts" />
+    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleTests.ts" />
+    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleWithTransformsTests.ts" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -94,9 +94,10 @@
     <Folder Include="tests\" />
     <Folder Include="src\" />
     <Folder Include="src\Compiler\" />
-    <Folder Include="tests\CompileModule\" />
-    <Folder Include="tests\CompileProject\" />
-    <Folder Include="tests\Transpile\" />
+    <Folder Include="tests\spec\CompileModule\" />
+    <Folder Include="tests\spec\CompileProject\" />
+    <Folder Include="tests\spec\" />
+    <Folder Include="tests\spec\TranspileModule\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />
     <Folder Include="tests\transforms\" />

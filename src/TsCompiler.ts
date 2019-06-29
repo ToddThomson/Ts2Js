@@ -34,6 +34,10 @@ export namespace TsCompiler {
     export function compileProject( configFilePath: string, transforms?: ts.CustomTransformers ): CompilerResult {
         const config = TsCore.getProjectConfig( configFilePath );
 
+        if ( config.errors.length > 0 ) {
+            return new CompilerResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, config.errors );
+        }
+
         return compile( config.fileNames, config.options, transforms );
     }
 

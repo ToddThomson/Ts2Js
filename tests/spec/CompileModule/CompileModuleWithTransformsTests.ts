@@ -1,10 +1,10 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import * as identity from "../transforms/IdentityTransform"
-import * as empty from "../transforms/EmptyTransform"
-import * as ts2js from "../../lib/TsCompiler"
+import * as identity from "../../transforms/IdentityTransform"
+import * as empty from "../../transforms/EmptyTransform"
+import * as ts2js from "../../../lib/TsCompiler"
 
-describe( "compileModule With Transforms", () => {
+describe( "Compile Module With Transforms", () => {
 
     function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: ts.CustomTransformers ) {
         describe( name, () => {

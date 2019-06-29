@@ -1,10 +1,8 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import * as identity from "../transforms/IdentityTransform"
-import * as empty from "../transforms/EmptyTransform"
-import * as ts2js from "../../lib/TsCompiler"
+import * as ts2js from "../../../lib/TsCompiler"
 
-describe( "compileModule With Transforms", () => {
+describe( "Compile Module", () => {
 
     function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: ts.CustomTransformers ) {
         describe( name, () => {
@@ -22,15 +20,7 @@ describe( "compileModule With Transforms", () => {
         } );
     }
 
-    compilesModuleCorrectly( "With Identity transform. Generates no diagnostics with valid inputs", `var x = 0;`,
-        {
-            module: ts.ModuleKind.CommonJS,
-        },
-        {
-            before: [identity.getTransform()]
-        } );
-
-    compilesModuleCorrectly( "With Empty transform generates no diagnostics with valid inputs", `var x = 0;`,
+    compilesModuleCorrectly( "Generates no diagnostics with valid inputs", `var x = 0;`,
         {
             module: ts.ModuleKind.CommonJS,
         } );
