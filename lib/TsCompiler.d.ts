@@ -1,31 +1,31 @@
 import * as ts from "typescript";
 import * as stream from "stream";
-interface CompilerFile {
+interface CompileFile {
     fileName: string;
     data: string;
     writeByteOrderMark: boolean;
 }
-interface CompilerOutput {
+interface CompileOutput {
     fileName: string;
     emitSkipped: boolean;
     diagnostics?: ReadonlyArray<ts.Diagnostic>;
-    codeFile?: CompilerFile;
-    dtsFile?: CompilerFile;
-    mapFile?: CompilerFile;
+    codeFile?: CompileFile;
+    dtsFile?: CompileFile;
+    mapFile?: CompileFile;
 }
 declare enum CompileStatus {
     Success = 0,
     DiagnosticsPresent_OutputsSkipped = 1,
     DiagnosticsPresent_OutputsGenerated = 2,
 }
-declare class CompilerResult {
+declare class CompileResult {
     private status;
     private readonly errors;
     private readonly output;
-    constructor(status: CompileStatus, errors?: ReadonlyArray<ts.Diagnostic>, emitOutput?: CompilerOutput[]);
+    constructor(status: CompileStatus, errors?: ReadonlyArray<ts.Diagnostic>, emitOutput?: CompileOutput[]);
     getErrors(): ReadonlyArray<ts.Diagnostic>;
     getStatus(): CompileStatus;
-    getOutput(): ReadonlyArray<CompilerOutput>;
+    getOutput(): ReadonlyArray<CompileOutput>;
     succeeded(): boolean;
 }
 declare class CachingCompilerHost implements ts.CompilerHost {
@@ -57,8 +57,8 @@ declare class Compiler {
     constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, transforms?: ts.CustomTransformers);
     getHost(): ts.CompilerHost;
     getProgram(): ts.Program;
-    compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompilerResult;
-    compileModule(input: string, moduleFileName: string): CompilerResult;
+    compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompileResult;
+    compileModule(input: string, moduleFileName: string): CompileResult;
     private emit();
     private fileEmit(fileName, sourceFile);
 }
@@ -67,15 +67,15 @@ declare class CompileStream extends stream.Readable {
     _read(): void;
 }
 export { CachingCompilerHost };
-export { CompilerFile };
-export { CompilerOutput };
+export { CompileFile };
+export { CompileOutput };
 export { CompileStatus };
-export { CompilerResult };
+export { CompileResult };
 export { CompileStream };
 export { Compiler };
 export declare namespace TsCompiler {
-    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
-    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompilerResult;
-    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompilerResult;
+    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompileResult;
+    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompileResult;
+    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompileResult;
     function transpileModule(input: string, options: ts.TranspileOptions): ts.TranspileOutput;
 }

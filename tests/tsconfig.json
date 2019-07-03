@@ -1,12 +1,14 @@
 ﻿{
+  "compileOnSave": true,
+
   "compilerOptions": {
     "target": "es5",
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": false,
+    "sourceMap": true,
     "noLib": false,
     "skipLibCheck": true,
-    "sourceMap": true,
     "pretty": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -21,11 +23,7 @@
       "node",
       "mocha",
       "chai"
-    ],
-    "baseUrl": ".",
-    "paths": {
-      "@TsToolsCommon/*": [ "../../TsToolsCommon/src/*" ]
-    }
+    ]
   },
   "exclude": [
     "node_modules",
@@ -34,6 +32,5 @@
     "build",
     "built",
     "src"
-  ],
-  "compileOnSave": true
+  ]
 }

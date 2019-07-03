@@ -9,7 +9,7 @@ describe( "compileModule With Transforms", () => {
     function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: ts.CustomTransformers ) {
         describe( name, () => {
             let moduleName: string;
-            let compileResult: ts2js.CompilerResult;
+            let compileResult: ts2js.CompileResult;
             options = options || {};
 
             moduleName = "compileModule/" + name.replace( /[^a-z0-9\-. ]/ig, "" ) + ( options.jsx ? ts.Extension.Tsx : ts.Extension.Ts );
@@ -33,5 +33,8 @@ describe( "compileModule With Transforms", () => {
     compilesModuleCorrectly( "With Empty transform generates no diagnostics with valid inputs", `var x = 0;`,
         {
             module: ts.ModuleKind.CommonJS,
+        },
+        {
+            before: [empty.getTransform()]
         } );
 } );

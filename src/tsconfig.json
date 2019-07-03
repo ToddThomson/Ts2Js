@@ -11,7 +11,7 @@
     "listFiles": false,
     "pretty": true,
     "skipLibCheck": true,
-    "noEmitOnError": true,
+    "noEmitOnError": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "allowUnreachableCode": false,
@@ -19,16 +19,8 @@
     "noImplicitUseStrict": false,
     "preserveConstEnums": true,
     "removeComments": false,
-    "noEmit": false,
-    "baseUrl": ".",
-    "paths": {
-      "@TsToolsCommon/*": [ "../../TsToolsCommon/src/*" ]
-    }
+    "noEmit": false
   },
-
-  "include": [
-    "./**/*.ts"
-  ],
 
   "exclude": [
     "node_modules"

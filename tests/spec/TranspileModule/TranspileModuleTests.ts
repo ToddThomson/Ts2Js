@@ -8,7 +8,7 @@ describe( "Transpile Module", () => {
         options?: ts.TranspileOptions;
     }
 
-    function transpilesModule( name: string, input: string, settings: TranspileTestSettings ) {
+    function TranspilesSuccessfully( name: string, input: string, settings: TranspileTestSettings ) {
         describe( name, () => {
             let moduleName: string;
             let transpileOptions: ts.TranspileOptions;
@@ -26,7 +26,7 @@ describe( "Transpile Module", () => {
         } );
     }
 
-    transpilesModule( "Generates no diagnostics with valid inputs", `var x = 0;`,
+    TranspilesSuccessfully( "Generates no diagnostics with valid inputs", `var x = 0;`,
         {
             options: { compilerOptions: { module: ts.ModuleKind.CommonJS } }
         } );

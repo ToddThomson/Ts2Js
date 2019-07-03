@@ -1,6 +1,6 @@
-﻿import * as ts from "typescript";
-import * as path from "path";
-import { Utils } from "@TsToolsCommon/Utils/Utilities";
+﻿import * as ts from "typescript"
+import * as path from "path"
+import { Utils } from "../../../TsToolsCommon/src/Utils/Utilities"
 
 /**
  * @description A typescript compiler host that supports incremental builds and optimizations

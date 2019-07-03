@@ -58,15 +58,13 @@
   <ItemGroup>
     <TypeScriptCompile Include="lib\TsCompiler.d.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerError.ts" />
-    <TypeScriptCompile Include="src\Compiler\CompileStatus.ts">
-      <SubType>Code</SubType>
-    </TypeScriptCompile>
+    <TypeScriptCompile Include="src\Compiler\CompileStatus.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileStream.ts" />
     <TypeScriptCompile Include="src\Compiler\CachingCompilerHost.ts" />
     <TypeScriptCompile Include="src\Compiler\Compiler.ts" />
-    <TypeScriptCompile Include="src\Compiler\CompilerFile.ts" />
-    <TypeScriptCompile Include="src\Compiler\CompilerOutput.ts" />
-    <TypeScriptCompile Include="src\Compiler\CompilerResult.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompileFile.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompileOutput.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompileResult.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleWithTransformsTests.ts">
       <TestFramework>Mocha</TestFramework>
@@ -74,18 +72,29 @@
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectTests.ts" />
-    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectWithTransformsTests.ts" />
+    <None Include="tests\spec\CompileProject\CompileProjectTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </None>
+    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectWithTransformsTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="tests\projects\simple\GreeterModule.ts" />
     <TypeScriptCompile Include="tests\projects\simple\main.ts" />
+    <TypeScriptCompile Include="tests\spec\Compile\CompileTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\transforms\IdentityTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleTests.ts" />
-    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleWithTransformsTests.ts" />
+    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleWithTransformsTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="build\" />
@@ -97,6 +106,7 @@
     <Folder Include="tests\spec\CompileModule\" />
     <Folder Include="tests\spec\CompileProject\" />
     <Folder Include="tests\spec\" />
+    <Folder Include="tests\spec\Compile\" />
     <Folder Include="tests\spec\TranspileModule\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />

@@ -1,10 +1,10 @@
-﻿import * as ts from "typescript";
-import { CompilerFile } from "./CompilerFile";
-import { CompilerOutput } from "./CompilerOutput";
-import { CompilerResult } from "./CompilerResult";
-import { CompileStatus } from "./CompileStatus";
-import { CachingCompilerHost } from "./CachingCompilerHost";
-import { TsCore } from "@TsToolsCommon/Utils/TsCore";
+﻿import * as ts from "typescript"
+import { CompileFile } from "./CompileFile"
+import { CompileOutput } from "./CompileOutput"
+import { CompileResult } from "./CompileResult"
+import { CompileStatus } from "./CompileStatus"
+import { CachingCompilerHost } from "./CachingCompilerHost"
+import { TsCore } from "../../../TsToolsCommon/src/Utils/TsCore"
 
 export class Compiler {
     private options: ts.CompilerOptions;
@@ -27,13 +27,13 @@ export class Compiler {
         return this.program;
     }
 
-    public compile( rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program ): CompilerResult {
+    public compile( rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program ): CompileResult {
         this.program = ts.createProgram( rootFileNames, this.options, this.host, oldProgram );
 
         return this.emit();
     }
 
-    public compileModule( input: string, moduleFileName: string ): CompilerResult {
+    public compileModule( input: string, moduleFileName: string ): CompileResult {
         var defaultGetSourceFile: ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ) => ts.SourceFile;
 
         function getSourceFile( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
@@ -56,12 +56,19 @@ export class Compiler {
         return this.emit();
     }
 
-    private emit(): CompilerResult {
-        var emitOutput: CompilerOutput[] = [];
+    private emit(): CompileResult {
+        var diagnosticsPresent: boolean = false;
+        var emitsPresent: boolean = false;
+        var compileStatus: CompileStatus = CompileStatus.Success;
+        var emitOutput: CompileOutput[] = [];
         var diagnostics = ts.getPreEmitDiagnostics( this.program );
 
         if ( this.options.noEmitOnError && ( diagnostics.length > 0 ) ) {
-            return new CompilerResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
+            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
+        }
+
+        if ( diagnostics.length > 0 ) {
+            diagnosticsPresent = true;
         }
 
         const fileNames = this.program.getRootFileNames();
@@ -81,18 +88,40 @@ export class Compiler {
                 continue;
             }
 
+            if ( preEmitDiagnostics.length > 0 ) {
+                diagnosticsPresent = true;
+            }
+
             var emitResult = this.fileEmit( fileNames[fileNameIndex], sourceFile );
 
+            if ( !emitResult.emitSkipped ) {
+                emitsPresent = true;
+            }
+
+            if ( emitResult.diagnostics.length > 0 ) {
+                diagnosticsPresent = true;
+            }
+
+            // TJT: file emit diagnostics should be concatenated?          
             emitOutput.push( emitResult );
         }
 
-        return new CompilerResult( CompileStatus.Success, diagnostics, emitOutput );
+        if ( diagnosticsPresent ) {
+            if ( emitsPresent ) {
+                compileStatus = CompileStatus.DiagnosticsPresent_OutputsGenerated;
+            }
+            else {
+                compileStatus = CompileStatus.DiagnosticsPresent_OutputsSkipped;
+            }
+        }
+
+        return new CompileResult( compileStatus, diagnostics, emitOutput );
     }
 
-    private fileEmit( fileName: string, sourceFile: ts.SourceFile ): CompilerOutput {
-        var codeFile: CompilerFile;
-        var mapFile: CompilerFile;
-        var dtsFile: CompilerFile;
+    private fileEmit( fileName: string, sourceFile: ts.SourceFile ): CompileOutput {
+        var codeFile: CompileFile;
+        var mapFile: CompileFile;
+        var dtsFile: CompileFile;
 
         let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.program, sourceFile );
 
@@ -105,7 +134,7 @@ export class Compiler {
         }
 
         const emitResult = this.program.emit( sourceFile, ( fileName: string, data: string, writeByteOrderMark: boolean ) => {
-            var file: CompilerFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
+            var file: CompileFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
 
             if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
                 codeFile = file;

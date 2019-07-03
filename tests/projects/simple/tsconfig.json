@@ -5,6 +5,7 @@
     "noEmitOnError": true,
     "removeComments": false,
     "sourceMap": true,
+    "declaration": true,
     "target": "es5",
     "typeRoots": [
       "./node_modules/@types",

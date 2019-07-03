@@ -1,4 +1,4 @@
-﻿export interface CompilerFile {
+﻿export interface CompileFile {
     fileName: string;
     data: string;
     writeByteOrderMark: boolean

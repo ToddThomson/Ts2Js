@@ -1,6 +1,6 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import { TsCompiler, CompilerResult, CompileStatus } from "../../../lib/TsCompiler"
+import { TsCompiler, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 import * as identity from "../../transforms/IdentityTransform"
 import * as empty from "../../transforms/EmptyTransform"
 
@@ -8,7 +8,7 @@ describe( "Compile Project With Transforms", () => {
 
     function compileProject( name: string, projectConfigPath: string, transformers?: ts.CustomTransformers ) {
         describe( name, () => {
-            let compileResult: CompilerResult;
+            let compileResult: CompileResult;
 
             compileResult = TsCompiler.compileProject( projectConfigPath, transformers );
 

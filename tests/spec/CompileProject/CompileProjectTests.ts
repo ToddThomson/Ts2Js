@@ -1,17 +1,23 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import { TsCompiler, CompilerResult, CompileStatus } from "../../../lib/TsCompiler"
+import * as mocha from "mocha"
+
+//import { TsCompiler, CompilerResult, CompileStatus } from "../../../lib/TsCompiler"
+import { TsCompiler, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 
 describe( "Compile Project", () => {
 
     function compileProject( name: string, projectConfigPath: string, transformers?: ts.CustomTransformers ) {
         describe( name, () => {
-            let compileResult: CompilerResult;
+            let compileResult: CompileResult;
 
             compileResult = TsCompiler.compileProject( projectConfigPath, transformers );
 
             it( "Compile status is successful", () => {
                 expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
+                expect( compileResult.getErrors() ).to.have.length( 0 );
+                var output = compileResult.getOutput();
+                expect( output ).to.have.length.greaterThan( 0 );
             } );
         } );
     }
