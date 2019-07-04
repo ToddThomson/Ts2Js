@@ -3,11 +3,11 @@ import { expect } from "chai"
 import * as mocha from "mocha"
 
 //import { TsCompiler, CompilerResult, CompileStatus } from "../../../lib/TsCompiler"
-import { TsCompiler, CompileResult, CompileStatus } from "../../../src/TsCompiler"
+import { TsCompiler, CompileTransformers, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 
 describe( "Compile Project", () => {
 
-    function compileProject( name: string, projectConfigPath: string, transformers?: ts.CustomTransformers ) {
+    function compileProject( name: string, projectConfigPath: string, transformers?: CompileTransformers ) {
         describe( name, () => {
             let compileResult: CompileResult;
 
@@ -22,7 +22,5 @@ describe( "Compile Project", () => {
         } );
     }
 
-    compileProject( "Compiles project", "./tests/projects/simple",
-        {
-        } );
+    compileProject( "Compiles project", "./tests/projects/simple" );
 } );

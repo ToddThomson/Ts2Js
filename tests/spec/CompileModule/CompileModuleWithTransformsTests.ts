@@ -2,23 +2,23 @@
 import { expect } from "chai"
 import * as identity from "../../transforms/IdentityTransform"
 import * as empty from "../../transforms/EmptyTransform"
-import * as ts2js from "../../../lib/TsCompiler"
+import { TsCompiler, CompileTransformers, CompileStatus, CompileResult } from "../../../lib/TsCompiler"
 
 describe( "Compile Module With Transforms", () => {
 
-    function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: ts.CustomTransformers ) {
+    function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: CompileTransformers ) {
         describe( name, () => {
             let moduleName: string;
-            let compileResult: ts2js.CompileResult;
+            let compileResult: CompileResult;
             options = options || {};
             //transformers = transformers || {}; 
 
             moduleName = "compileModule/" + name.replace( /[^a-z0-9\-. ]/ig, "" ) + ( options.jsx ? ts.Extension.Tsx : ts.Extension.Ts );
 
-            compileResult = ts2js.TsCompiler.compileModule( input, moduleName, options, transformers );
+            compileResult = TsCompiler.compileModule( input, moduleName, options, transformers );
 
             it( "Correct errors for " + moduleName, () => {
-                expect( compileResult.getStatus() ).to.equal( ts2js.CompileStatus.Success );
+                expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
             } );
         } );
     }
@@ -27,15 +27,15 @@ describe( "Compile Module With Transforms", () => {
         {
             module: ts.ModuleKind.CommonJS,
         },
-        {
+        () => ({
             before: [identity.getTransform()]
-        } );
+        } ) );
 
     compilesModuleCorrectly( "With Empty transform generates no diagnostics with valid inputs", `var x = 0;`,
         {
             module: ts.ModuleKind.CommonJS,
         },
-        {
+        () => ({
             before: [empty.getTransform()]
-        } );
+        } ) );
 } );

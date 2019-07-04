@@ -1,21 +1,21 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import * as ts2js from "../../../lib/TsCompiler"
+import { TsCompiler, CompileTransformers, CompileResult, CompileStatus } from  "../../../lib/TsCompiler"
 
 describe( "Compile Module", () => {
 
-    function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: ts.CustomTransformers ) {
+    function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: CompileTransformers ) {
         describe( name, () => {
             let moduleName: string;
-            let compileResult: ts2js.CompileResult;
+            let compileResult: CompileResult;
             options = options || {};
 
             moduleName = "compileModule/" + name.replace( /[^a-z0-9\-. ]/ig, "" ) + ( options.jsx ? ts.Extension.Tsx : ts.Extension.Ts );
 
-            compileResult = ts2js.TsCompiler.compileModule( input, moduleName, options );
+            compileResult = TsCompiler.compileModule( input, moduleName, options );
 
             it( "Correct errors for " + moduleName, () => {
-                expect( compileResult.getStatus() ).to.equal( ts2js.CompileStatus.Success );
+                expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
             } );
         } );
     }

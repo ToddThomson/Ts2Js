@@ -1,13 +1,13 @@
 ﻿[![npm version](https://badge.fury.io/js/ts2js.svg)](http://badge.fury.io/js/ts2js)
 ﻿[![Build Status](https://travis-ci.org/ToddThomson/Ts2Js.svg?branch=master)](https://travis-ci.org/ToddThomson/Ts2Js)
 # ts2js
-ts2js is a simple, fast, extendable Typescript in memory compiler.
+ts2js is a simple, fast, extendable Typescript in-memory compiler.
 
 ## Top Features
 * Compiles projects, files and modules
 * Transpiles modules
 * Supports Typescript custom transformers
-* Fast, cache optimized, memory based builds
+* Fast, cache optimized, in-memory based builds
 * Supports the latest version of Typescript 3.5
 
 ## ts2js Wiki

@@ -1,12 +1,12 @@
 ﻿import * as ts from "typescript"
 import { expect } from "chai"
-import { TsCompiler, CompileResult, CompileStatus } from "../../../src/TsCompiler"
+import { TsCompiler, CompileTransformers, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 import * as identity from "../../transforms/IdentityTransform"
 import * as empty from "../../transforms/EmptyTransform"
 
 describe( "Compile Project With Transforms", () => {
 
-    function compileProject( name: string, projectConfigPath: string, transformers?: ts.CustomTransformers ) {
+    function compileProject( name: string, projectConfigPath: string, transformers?: CompileTransformers ) {
         describe( name, () => {
             let compileResult: CompileResult;
 
@@ -21,7 +21,7 @@ describe( "Compile Project With Transforms", () => {
     compileProject(
         "With Identity transform",
         "./tests/projects/simple",
-        {
+        () => ( {
             before: [identity.getTransform()]
-        } );
+        } ) );
 } );

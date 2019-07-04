@@ -1,8 +1,8 @@
 {
   "name": "ts2js",
-  "version": "3.0.0-beta.9",
+  "version": "3.0.0-beta.10",
   "author": "Todd Thomson <todd.thomson@me.com>",
-  "description": "A simple, fast, extendable Typescript compiler.",
+  "description": "A simple, fast, extendable Typescript in-memory compiler.",
   "license": "MIT",
   "main": "./lib/tscompiler.js",
   "types": "./lib/tscompiler.d.ts",

@@ -3,6 +3,7 @@ import { CompileFile } from "./CompileFile"
 import { CompileOutput } from "./CompileOutput"
 import { CompileResult } from "./CompileResult"
 import { CompileStatus } from "./CompileStatus"
+import { CompileTransformers } from "./CompileTransformers"
 import { CachingCompilerHost } from "./CachingCompilerHost"
 import { TsCore } from "../../../TsToolsCommon/src/Utils/TsCore"
 
@@ -10,13 +11,14 @@ export class Compiler {
     private options: ts.CompilerOptions;
     private host: ts.CompilerHost;
     private program: ts.Program;
-    private transforms: ts.CustomTransformers;
+    private pastProgram: ts.Program;
+    private transformers: CompileTransformers;
 
-    constructor( options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, transforms?: ts.CustomTransformers ) {
+    constructor( options: ts.CompilerOptions, host?: ts.CompilerHost, pastProgram?: ts.Program, transformers?: CompileTransformers ) {
         this.options = options ? options : ts.getDefaultCompilerOptions();
-        this.transforms = transforms;
+        this.transformers = transformers || undefined;
         this.host = host || new CachingCompilerHost( options );
-        this.program = program;
+        this.pastProgram = pastProgram;
     }
 
     public getHost(): ts.CompilerHost {
@@ -102,7 +104,8 @@ export class Compiler {
                 diagnosticsPresent = true;
             }
 
-            // TJT: file emit diagnostics should be concatenated?          
+            // TODO:
+            // TJT: file emit diagnostics should be concatenated?
             emitOutput.push( emitResult );
         }
 
@@ -133,17 +136,22 @@ export class Compiler {
             };
         }
 
-        const emitResult = this.program.emit( sourceFile, ( fileName: string, data: string, writeByteOrderMark: boolean ) => {
-            var file: CompileFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
+        const emitResult = this.program.emit(
+            sourceFile,
+            ( fileName: string, data: string, writeByteOrderMark: boolean ) => {
+                var file: CompileFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
 
-            if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
-                codeFile = file;
-            } else if ( TsCore.fileExtensionIs( fileName, "d.ts" ) ) {
-                dtsFile = file;
-            } else if ( TsCore.fileExtensionIs( fileName, ".map" ) ) {
-                mapFile = file;
-            }
-        }, /*cancellationToken*/ undefined, /*emitOnlyDtsFiles*/ false, this.transforms );
+                if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
+                    codeFile = file;
+                } else if ( TsCore.fileExtensionIs( fileName, "d.ts" ) ) {
+                    dtsFile = file;
+                } else if ( TsCore.fileExtensionIs( fileName, ".map" ) ) {
+                    mapFile = file;
+                }
+            },
+            /*cancellationToken*/ undefined,
+            /*emitOnlyDtsFiles*/ false,
+            this.transformers ? this.transformers( this.program ) : undefined );
 
         return {
             fileName: fileName,

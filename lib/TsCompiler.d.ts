@@ -28,6 +28,7 @@ declare class CompileResult {
     getOutput(): ReadonlyArray<CompileOutput>;
     succeeded(): boolean;
 }
+declare type CompileTransformers = ((program?: ts.Program) => ts.CustomTransformers | undefined);
 declare class CachingCompilerHost implements ts.CompilerHost {
     private output;
     private dirExistsCache;
@@ -53,8 +54,9 @@ declare class Compiler {
     private options;
     private host;
     private program;
-    private transforms;
-    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, program?: ts.Program, transforms?: ts.CustomTransformers);
+    private pastProgram;
+    private transformers;
+    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, pastProgram?: ts.Program, transformers?: CompileTransformers);
     getHost(): ts.CompilerHost;
     getProgram(): ts.Program;
     compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompileResult;
@@ -72,10 +74,42 @@ export { CompileOutput };
 export { CompileStatus };
 export { CompileResult };
 export { CompileStream };
+export { CompileTransformers };
 export { Compiler };
 export declare namespace TsCompiler {
-    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompileResult;
-    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transforms?: ts.CustomTransformers): CompileResult;
-    function compileProject(configFilePath: string, transforms?: ts.CustomTransformers): CompileResult;
+    /**
+     * Compiles a given array of root file names.
+     *
+     * @param rootFileNames The root files used to determine the compilation files.
+     * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
+    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers): CompileResult;
+    /**
+     * Compiles a given array of root file names.
+     *
+     * @param input A string providing the typescript source.
+     * @param moduleFileName The module name.
+     * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
+    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers): CompileResult;
+    /**
+     * compiles a project from the provided Typescript configuration file.
+     *
+     * @param configFilePath A path to the Typescript json configuration file.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
+    function compileProject(configFilePath: string, transformers?: CompileTransformers): CompileResult;
+    /**
+     * A simple wrapper around the Typescript transpile module function.
+     *
+     * @param input Typescript source to transpile
+     * @param options TranspileOptions to use.
+     * @returns A Typescript TranspileOutput object.
+     */
     function transpileModule(input: string, options: ts.TranspileOptions): ts.TranspileOutput;
 }
