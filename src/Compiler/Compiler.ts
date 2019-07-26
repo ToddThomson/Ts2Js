@@ -5,7 +5,7 @@ import { CompileResult } from "./CompileResult"
 import { CompileStatus } from "./CompileStatus"
 import { CompileTransformers } from "./CompileTransformers"
 import { CachingCompilerHost } from "./CachingCompilerHost"
-import { TsCore } from "../../../TsToolsCommon/src/Utils/TsCore"
+import { TsCore } from "../../../TsToolsCommon/src/Typescript/Core"
 
 export class Compiler {
     private options: ts.CompilerOptions;

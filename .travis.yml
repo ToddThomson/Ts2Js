@@ -3,9 +3,12 @@
 node_js:
   - 'node'
   - '10'
-  - '8'
+
+install:
+  - mkdir built
 
 before_script:
   - npm install -g gulp-cli
+  - git clone git@github.com:toddthomson>/tstoolscommon.git
 
 script: gulp build

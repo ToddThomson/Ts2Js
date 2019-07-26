@@ -1,5 +1,5 @@
 ﻿import * as ts from "typescript"
-import { TsCore } from "../../TsToolsCommon/src/Utils/TsCore"
+import { TsCore } from "../../TsToolsCommon/src/Typescript/Core"
 import { CachingCompilerHost } from "./Compiler/CachingCompilerHost"
 import { Compiler } from "./Compiler/Compiler"
 import { CompileFile } from "./Compiler/CompileFile"
@@ -36,7 +36,7 @@ export namespace TsCompiler {
     }
 
     /**
-     * Compiles a given array of root file names.
+     * Compiles an input string.
      * 
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.

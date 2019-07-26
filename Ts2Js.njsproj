@@ -39,6 +39,7 @@
   <ItemGroup>
     <Content Include=".gitattributes" />
     <Content Include=".gitignore" />
+    <Content Include=".mocharc.json" />
     <Content Include=".npmignore" />
     <Content Include=".travis.yml" />
     <Content Include="build\paths.js" />
@@ -49,11 +50,14 @@
     <Content Include="gulpfile.js" />
     <Content Include="lib\TsCompiler.js" />
     <Content Include="LICENSE" />
+    <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\tsconfig.json" />
     <Content Include="tests\projects\simple\tsconfig.json" />
+    <Content Include="tests\spec\tsconfig.json" />
     <Content Include="tests\tsconfig.json" />
+    <Content Include="tsconfig.json" />
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="lib\TsCompiler.d.ts" />

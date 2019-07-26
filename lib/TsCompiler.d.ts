@@ -87,7 +87,7 @@ export declare namespace TsCompiler {
      */
     function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers): CompileResult;
     /**
-     * Compiles a given array of root file names.
+     * Compiles an input string.
      *
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.

@@ -60,5 +60,4 @@ describe( "compile()", () => {
             before: [empty.getTransform()]
         } )
     );
-
 } );

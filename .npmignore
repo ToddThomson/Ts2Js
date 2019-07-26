@@ -8,6 +8,7 @@ dist
 obj
 src
 tests
+.mocharc.json
 .gitignore
 .gitattributes
 .npmignore

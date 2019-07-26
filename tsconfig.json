@@ -1,0 +1,10 @@
+﻿{
+  "exclude": [
+    "node_modules",
+    "obj",
+    "dist",
+    "build",
+    "built",
+    "src"
+  ]
+}
