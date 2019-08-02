@@ -1,6 +1,6 @@
 {
   "name": "ts2js",
-  "version": "3.0.0-beta.12",
+  "version": "3.0.0-beta.13",
   "author": "Todd Thomson <todd.thomson@me.com>",
   "description": "A simple, fast, extendable Typescript in-memory compiler.",
   "license": "MIT",
@@ -13,7 +13,7 @@
   "dependencies": {
     "@types/node": "^10.14.9",
     "@types/lodash": "^4.14.136",
-    "typescript": " ~3.5.3"
+    "typescript": "3.6.0-beta"
   },
   "devDependencies": {
     "@types/chai": "^4.1.7",
@@ -27,7 +27,6 @@
     "ts-node": "^8.3.0",
     "tsconfig-paths": "^3.8.0",
     "tsproject": "2.1.2",
-    "typescript": "~3.5.3",
     "vinyl-paths": "~3.0.0"
   },
   "keywords": [
@@ -47,10 +46,8 @@
   },
   "bugs": "https://github.com/toddthomson/ts2js/issues",
   "scripts": {
-    "tsc-build": "tsc --build ./src ",
-    "tsc-clean": "tsc --build ./src --clean",
-    "build": "tsc --build ./src && gulp build",
-    "clean": "tsc --build ./src --clean && gulp clean",
+    "build": "tsc --build ./src",
+    "clean": "tsc --build ./src --clean",
     "test": "mocha"
   }
 }

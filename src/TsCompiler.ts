@@ -8,6 +8,7 @@ import { CompileResult } from "./Compiler/CompileResult"
 import { CompileStatus } from "./Compiler/CompileStatus"
 import { CompileStream } from "./Compiler/CompileStream"
 import { CompileTransformers } from "./Compiler/CompileTransformers"
+import { BuilderHost } from "./Compiler/BuilderHost"
 
 // Exported types...
 export { CachingCompilerHost }
@@ -65,6 +66,24 @@ export namespace TsCompiler {
         }
 
         return compile( config.fileNames, config.options, transformers );
+    }
+
+    export function compileSolution( configFilePath: string, buildOptions: ts.BuildOptions )
+    {
+        const config = TsCore.getProjectConfig( configFilePath );
+
+        if ( config.errors.length > 0 )
+        {
+            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, config.errors );
+        }
+
+        const host = new BuilderHost( config.options );
+        const builder = ts.createSolutionBuilder( host, [configFilePath], buildOptions );
+
+        host.clearDiagnostics();
+        let buildResult: ts.ExitStatus = builder.build();
+
+        return new CompileResult( CompileStatus.Success );
     }
 
     /**

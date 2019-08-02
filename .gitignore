@@ -12,6 +12,7 @@ tests/**/*.js
 tests/**/*.js.map
 tests/**/*.d.ts
 ts2js.js
+**/*.tsbuildinfo
 *.dat
 *.njsproj.user
 *.njsproj.vspscc

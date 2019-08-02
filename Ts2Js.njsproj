@@ -18,8 +18,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0400168f-4110-4068-a889-a7db636b7c24</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>
-    </StartupFile>
+    <StartupFile>tests\spec\CompileProject\CompileProjectTests.ts</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -61,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="lib\TsCompiler.d.ts" />
+    <TypeScriptCompile Include="src\Compiler\BuilderHost.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerError.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileTransformers.ts">
       <SubType>Code</SubType>
@@ -73,6 +73,7 @@
     <TypeScriptCompile Include="src\Compiler\CompileOutput.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileResult.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
+    <TypeScriptCompile Include="tests\spec\BuildProject\BuildProjectTests.ts" />
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleWithTransformsTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
@@ -114,6 +115,7 @@
     <Folder Include="tests\spec\CompileProject\" />
     <Folder Include="tests\spec\" />
     <Folder Include="tests\spec\Compile\" />
+    <Folder Include="tests\spec\BuildProject\" />
     <Folder Include="tests\spec\TranspileModule\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />

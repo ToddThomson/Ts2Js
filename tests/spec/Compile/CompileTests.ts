@@ -28,13 +28,13 @@ describe( "compile()", () => {
     }
 
     compilesSuccessfully(
-        "file exits with valid source",
+        "file exists with valid source",
         "./tests/projects/simple/main.ts",
         { module: ts.ModuleKind.CommonJS }
     );
 
     compilesWithErrors(
-        "file does not exit",
+        "file does not exist",
         "anonexistentfile.ts",
         { module: ts.ModuleKind.CommonJS }
     );
