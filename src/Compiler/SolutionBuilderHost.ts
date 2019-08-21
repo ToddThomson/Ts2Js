@@ -6,13 +6,12 @@ import { CachingCompilerHost } from "./CachingCompilerHost"
  * for file reads and file exists functions.
  * Emit output is saved to memory.
  */
-
-export class BuilderHost extends CachingCompilerHost implements ts.SolutionBuilderHost<ts.BuilderProgram>
+export class SolutionBuilderHost extends CachingCompilerHost implements ts.ProgramHost<ts.EmitAndSemanticDiagnosticsBuilderProgram>
 {
-    public createProgram: ts.CreateProgram<ts.BuilderProgram>;
+    public createProgram: ts.CreateProgram<ts.EmitAndSemanticDiagnosticsBuilderProgram>;
     private diagnostics: ts.Diagnostic[] = [];
 
-    constructor( compilerOptions: ts.CompilerOptions, createProgram?: ts.CreateProgram<ts.BuilderProgram> )
+    constructor( compilerOptions: ts.CompilerOptions, createProgram?: ts.CreateProgram<ts.EmitAndSemanticDiagnosticsBuilderProgram> )
     {
         super( compilerOptions );
 

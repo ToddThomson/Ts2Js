@@ -127,6 +127,6 @@ export class CachingCompilerHost implements ts.CompilerHost
 
     protected isBuildInfoFile( file: string )
     {
-        return TsCore.fileExtensionIs( file, ts.Extension.TsBuildInfo );
+        return TsCore.fileExtensionIs( file, ts.Extension.TsBuildInfo.toString() );
     }
 }

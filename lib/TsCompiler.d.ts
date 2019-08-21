@@ -30,18 +30,19 @@ declare class CompileResult {
 }
 declare type CompileTransformers = ((program?: ts.Program) => ts.CustomTransformers | undefined);
 declare class CachingCompilerHost implements ts.CompilerHost {
+    protected system: ts.System;
     private output;
     private dirExistsCache;
     private fileExistsCache;
     private fileReadCache;
     protected compilerOptions: ts.CompilerOptions;
-    private baseHost;
+    protected baseHost: ts.CompilerHost;
     constructor(compilerOptions: ts.CompilerOptions);
     getOutput: () => ts.MapLike<string>;
+    readFile: (fileName: string) => string;
     writeFile: (fileName: string, data: string, writeByteOrderMark: boolean, onError?: (message: string) => void) => void;
     directoryExists: (directoryPath: string) => boolean;
     fileExists: (fileName: string) => boolean;
-    readFile: (fileName: string) => string;
     getSourceFile: (fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void) => ts.SourceFile;
     getDefaultLibFileName: (options: ts.CompilerOptions) => string;
     getCurrentDirectory: () => string;
@@ -49,6 +50,8 @@ declare class CachingCompilerHost implements ts.CompilerHost {
     getCanonicalFileName: (fileName: string) => string;
     useCaseSensitiveFileNames: () => boolean;
     getNewLine: () => string;
+    readDirectory(rootDir: string, extensions?: ReadonlyArray<string>, exclude?: ReadonlyArray<string>, include?: ReadonlyArray<string>, depth?: number): string[];
+    protected isBuildInfoFile(file: string): boolean;
 }
 declare class Compiler {
     private options;
@@ -64,6 +67,18 @@ declare class Compiler {
     private emit();
     private fileEmit(fileName, sourceFile);
 }
+interface CompileOptions {
+    /** Defaults to 0 */
+    logLevel?: number;
+    /**
+     * Sets verbose output.
+     * Defaults to false.
+     */
+    verbose?: boolean;
+    /**  Defaults to false. */
+    outputToDisk?: boolean;
+    forceBuild?: boolean;
+}
 declare class CompileStream extends stream.Readable {
     constructor(opts?: stream.ReadableOptions);
     _read(): void;
@@ -75,6 +90,7 @@ export { CompileStatus };
 export { CompileResult };
 export { CompileStream };
 export { CompileTransformers };
+export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
     /**
