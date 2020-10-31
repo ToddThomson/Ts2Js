@@ -12,5 +12,7 @@
     /**  Defaults to false. */
     outputToDisk?: boolean;
 
+    incremental?: boolean;
+
     forceBuild?: boolean;
 }

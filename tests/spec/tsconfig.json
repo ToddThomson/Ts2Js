@@ -17,8 +17,7 @@
     "noImplicitUseStrict": false,
     "types": [
       "node",
-      "mocha",
-      "chai"
+      "mocha"
     ]
   }
 }

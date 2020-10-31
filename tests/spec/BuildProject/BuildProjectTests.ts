@@ -1,5 +1,5 @@
 ﻿import { expect } from "chai"
-import { TsCompiler, CompileTransformers, CompileResult, CompileStatus } from "../../../src/TsCompiler"
+import { TsSolutionBuilder, TsCompiler, CompileTransformers, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 
 ////describe( "Build Project", () => {
 
@@ -7,7 +7,7 @@ import { TsCompiler, CompileTransformers, CompileResult, CompileStatus } from ".
         //describe( name, () => {
             let compileResult: CompileResult;
 
-            compileResult = TsCompiler.compileSolution( projectConfigPath, { verbose: true } );
+            compileResult = TsSolutionBuilder.build( projectConfigPath, { verbose: true } );
 
         //    it( "Compile status is successful", () => {
         //        expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
