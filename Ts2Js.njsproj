@@ -49,7 +49,6 @@
     <Content Include="gulpfile.js" />
     <Content Include="lib\TsCompiler.js" />
     <Content Include="LICENSE" />
-    <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\tsconfig.json" />
@@ -75,22 +74,28 @@
     <TypeScriptCompile Include="src\Compiler\CompileResult.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileOptions.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
-    <TypeScriptCompile Include="tests\spec\BuildProject\BuildProjectTests.ts" />
+    <TypeScriptCompile Include="tests\spec\BuildProject\BuildProjectTests.ts">
+      <TestFramework>Mocha</TestFramework>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleWithTransformsTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
-    <None Include="tests\spec\CompileProject\CompileProjectTests.ts">
+    <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
-    </None>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\CompileProject\CompileProjectWithTransformsTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\projects\simple\GreeterModule.ts" />
     <TypeScriptCompile Include="tests\projects\simple\main.ts" />
     <TypeScriptCompile Include="tests\spec\Compile\CompileTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
@@ -100,9 +105,11 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleWithTransformsTests.ts">
+      <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
   </ItemGroup>

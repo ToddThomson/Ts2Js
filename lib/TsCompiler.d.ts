@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import * as ts from "typescript";
 import * as stream from "stream";
 interface CompileFile {
@@ -16,7 +17,7 @@ interface CompileOutput {
 declare enum CompileStatus {
     Success = 0,
     DiagnosticsPresent_OutputsSkipped = 1,
-    DiagnosticsPresent_OutputsGenerated = 2,
+    DiagnosticsPresent_OutputsGenerated = 2
 }
 declare class CompileResult {
     private status;
@@ -64,8 +65,8 @@ declare class Compiler {
     getProgram(): ts.Program;
     compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompileResult;
     compileModule(input: string, moduleFileName: string): CompileResult;
-    private emit();
-    private fileEmit(fileName, sourceFile);
+    private emit;
+    private fileEmit;
 }
 interface CompileOptions {
     /** Defaults to 0 */
@@ -77,6 +78,7 @@ interface CompileOptions {
     verbose?: boolean;
     /**  Defaults to false. */
     outputToDisk?: boolean;
+    incremental?: boolean;
     forceBuild?: boolean;
 }
 declare class CompileStream extends stream.Readable {
@@ -93,6 +95,7 @@ export { CompileTransformers };
 export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
+    const version = "4.1.0-dev.1";
     /**
      * Compiles a given array of root file names.
      *

@@ -43,7 +43,7 @@ export class Compiler {
                 return moduleSourceFile;
             }
 
-            // Use base class to get the all source files other than the module
+            // Use base class to get the all source files other than the input module
             return defaultGetSourceFile( fileName, languageVersion, onError );
         }
 

@@ -43,6 +43,8 @@ export namespace TsSolutionBuilder
 
 export namespace TsCompiler
 {
+    export const version = "4.1.0-dev.1";
+
     /**
      * Compiles a given array of root file names.
      * 

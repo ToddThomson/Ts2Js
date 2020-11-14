@@ -8,7 +8,7 @@ ts2js is a simple, fast, extendable Typescript in-memory compiler. It supports
 * Transpiles modules
 * Supports Typescript custom transformers
 * Fast, cache optimized, in-memory based builds
-* Supports the latest version of Typescript 3.6
+* Supports Typescript 4.1
 
 ## ts2js Wiki
 
