@@ -1,18 +1,17 @@
 ﻿export interface CompileOptions
 {
-    /** Defaults to 0 */
+    /**
+     * Sets log level. Defaults to 0
+     */
     logLevel?: number;
 
     /**
-     * Sets verbose output.
-     * Defaults to false.
+     * Sets verbose output. Defaults to false.
      */
     verbose?: boolean;
 
-    /**  Defaults to false. */
-    outputToDisk?: boolean;
-
-    incremental?: boolean;
-
-    forceBuild?: boolean;
+    /**
+     * Sets type checking only with no output files emitted. Defaults to false.
+     */
+    typeCheckOnly?: boolean;
 }

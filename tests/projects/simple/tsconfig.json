@@ -7,7 +7,7 @@
     //"declaration": true,
     "noEmitOnError": true,
     "removeComments": false,
-    "incremental": true,
+    "incremental": false,
     "typeRoots": [
       "./node_modules/@types",
       "./node_modules"

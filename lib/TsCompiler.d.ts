@@ -29,6 +29,20 @@ declare class CompileResult {
     getOutput(): ReadonlyArray<CompileOutput>;
     succeeded(): boolean;
 }
+interface CompileOptions {
+    /**
+     * Sets log level. Defaults to 0
+     */
+    logLevel?: number;
+    /**
+     * Sets verbose output. Defaults to false.
+     */
+    verbose?: boolean;
+    /**
+     * Sets type checking only with no output files emitted. Defaults to false.
+     */
+    typeCheckOnly?: boolean;
+}
 declare type CompileTransformers = ((program?: ts.Program) => ts.CustomTransformers | undefined);
 declare class CachingCompilerHost implements ts.CompilerHost {
     protected system: ts.System;
@@ -58,28 +72,14 @@ declare class Compiler {
     private options;
     private host;
     private program;
-    private pastProgram;
-    private transformers;
-    constructor(options: ts.CompilerOptions, host?: ts.CompilerHost, pastProgram?: ts.Program, transformers?: CompileTransformers);
-    getHost(): ts.CompilerHost;
-    getProgram(): ts.Program;
-    compile(rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program): CompileResult;
-    compileModule(input: string, moduleFileName: string): CompileResult;
-    private emit;
+    getProgram(): ts.Program | null;
+    static defaultCompileOptions: CompileOptions;
+    compileFiles(rootFileNames: ReadonlyArray<string>, compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
+    compileProject(configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
+    compileModule(input: string, moduleFileName: string, transformers?: CompileTransformers): CompileResult;
+    private emitFiles;
     private fileEmit;
-}
-interface CompileOptions {
-    /** Defaults to 0 */
-    logLevel?: number;
-    /**
-     * Sets verbose output.
-     * Defaults to false.
-     */
-    verbose?: boolean;
-    /**  Defaults to false. */
-    outputToDisk?: boolean;
-    incremental?: boolean;
-    forceBuild?: boolean;
+    private isBuilderProgram;
 }
 declare class CompileStream extends stream.Readable {
     constructor(opts?: stream.ReadableOptions);
@@ -95,7 +95,7 @@ export { CompileTransformers };
 export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
-    const version = "4.1.0-dev.1";
+    const version = "4.1.0-dev.2";
     /**
      * Compiles a given array of root file names.
      *
@@ -104,7 +104,7 @@ export declare namespace TsCompiler {
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
-    function compile(rootFileNames: string[], compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers): CompileResult;
+    function compileFiles(rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
     /**
      * Compiles an input string.
      *
@@ -122,13 +122,5 @@ export declare namespace TsCompiler {
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
-    function compileProject(configFilePath: string, transformers?: CompileTransformers): CompileResult;
-    /**
-     * A simple wrapper around the Typescript transpile module function.
-     *
-     * @param input Typescript source to transpile
-     * @param options TranspileOptions to use.
-     * @returns A Typescript TranspileOutput object.
-     */
-    function transpileModule(input: string, options: ts.TranspileOptions): ts.TranspileOutput;
+    function compileProject(configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
 }

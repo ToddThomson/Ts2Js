@@ -43,7 +43,7 @@ export namespace TsSolutionBuilder
 
 export namespace TsCompiler
 {
-    export const version = "4.1.0-dev.1";
+    export const version = "4.1.0-dev.2";
 
     /**
      * Compiles a given array of root file names.
@@ -53,11 +53,11 @@ export namespace TsCompiler
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult} 
      */
-    export function compile( rootFileNames: string[], compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers ): CompileResult
+    export function compileFiles( rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions,  transformers?: CompileTransformers ): CompileResult
     {
-        const compiler = new Compiler( compilerOptions, /*host*/undefined, /*program*/ undefined, transformers );
+        const compiler = new Compiler();
 
-        return compiler.compile( rootFileNames );
+        return compiler.compileFiles( rootFileNames, compilerOptions, compileOptions, transformers );
     }
 
     /**
@@ -71,9 +71,9 @@ export namespace TsCompiler
      */
     export function compileModule( input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers ): CompileResult
     {
-        const compiler = new Compiler( compilerOptions, /*program*/ undefined, /*host*/ undefined, transformers );
+        const compiler = new Compiler();
 
-        return compiler.compileModule( input, moduleFileName );
+        return compiler.compileModule( input, moduleFileName, transformers );
     }
 
     /**
@@ -83,27 +83,10 @@ export namespace TsCompiler
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
-    export function compileProject( configFilePath: string, transformers?: CompileTransformers ): CompileResult
+    export function compileProject( configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
-        const config = TsCore.getProjectConfig( configFilePath );
+        const compiler = new Compiler();
 
-        if ( config.errors.length > 0 )
-        {
-            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, config.errors );
-        }
-
-        return compile( config.fileNames, config.options, transformers );
-    }
-
-    /**
-     * A simple wrapper around the Typescript transpile module function.
-     * 
-     * @param input Typescript source to transpile
-     * @param options TranspileOptions to use.
-     * @returns A Typescript TranspileOutput object.
-     */
-    export function transpileModule( input: string, options: ts.TranspileOptions ): ts.TranspileOutput
-    {
-        return ts.transpileModule( input, options );
+        return compiler.compileProject( configFilePath, compileOptions, transformers );
     }
 }

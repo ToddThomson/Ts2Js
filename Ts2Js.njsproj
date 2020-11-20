@@ -94,7 +94,7 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\projects\simple\GreeterModule.ts" />
     <TypeScriptCompile Include="tests\projects\simple\main.ts" />
-    <TypeScriptCompile Include="tests\spec\Compile\CompileTests.ts">
+    <TypeScriptCompile Include="tests\spec\CompileFiles\CompileTests.ts">
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
@@ -103,14 +103,6 @@
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\transforms\IdentityTransform.ts">
       <SubType>Code</SubType>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleTests.ts">
-      <SubType>Code</SubType>
-      <TestFramework>Mocha</TestFramework>
-    </TypeScriptCompile>
-    <TypeScriptCompile Include="tests\spec\TranspileModule\TranspileModuleWithTransformsTests.ts">
-      <SubType>Code</SubType>
-      <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
   </ItemGroup>
   <ItemGroup>
@@ -123,9 +115,8 @@
     <Folder Include="tests\spec\CompileModule\" />
     <Folder Include="tests\spec\CompileProject\" />
     <Folder Include="tests\spec\" />
-    <Folder Include="tests\spec\Compile\" />
+    <Folder Include="tests\spec\CompileFiles\" />
     <Folder Include="tests\spec\BuildProject\" />
-    <Folder Include="tests\spec\TranspileModule\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />
     <Folder Include="tests\transforms\" />

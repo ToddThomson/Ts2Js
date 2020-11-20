@@ -3,39 +3,141 @@ import { CompileFile } from "./CompileFile"
 import { CompileOutput } from "./CompileOutput"
 import { CompileResult } from "./CompileResult"
 import { CompileStatus } from "./CompileStatus"
+import { CompileOptions } from "./CompileOptions"
 import { CompileTransformers } from "./CompileTransformers"
 import { CachingCompilerHost } from "./CachingCompilerHost"
 import { TsCore } from "../../../TsToolsCommon/src/Typescript/Core"
+import { Utils } from "../../../TsToolsCommon/src/Utils/Utilities"
 
-export class Compiler {
+interface EmitFilesProgram
+{
+    getCurrentDirectory(): string;
+    getCompilerOptions(): ts.CompilerOptions;
+    getSourceFiles(): readonly ts.SourceFile[];
+    getSyntacticDiagnostics( sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken ): readonly ts.Diagnostic[];
+    getOptionsDiagnostics( cancellationToken?: ts.CancellationToken ): readonly ts.Diagnostic[];
+    getGlobalDiagnostics( cancellationToken?: ts.CancellationToken ): readonly ts.Diagnostic[];
+    getSemanticDiagnostics( sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken ): readonly ts.Diagnostic[];
+    getDeclarationDiagnostics( sourceFile?: ts.SourceFile, cancellationToken?: ts.CancellationToken ): readonly ts.DiagnosticWithLocation[];
+    getConfigFileParsingDiagnostics(): readonly ts.Diagnostic[];
+    emit( targetSourceFile?: ts.SourceFile, writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken, emitOnlyDtsFiles?: boolean, customTransformers?: ts.CustomTransformers ): ts.EmitResult;
+    //emitBuildInfo( writeFile?: ts.WriteFileCallback, cancellationToken?: ts.CancellationToken ): ts.EmitResult;
+}
+
+export class Compiler
+{
     private options: ts.CompilerOptions;
     private host: ts.CompilerHost;
-    private program: ts.Program;
-    private pastProgram: ts.Program;
-    private transformers: CompileTransformers;
-
-    constructor( options: ts.CompilerOptions, host?: ts.CompilerHost, pastProgram?: ts.Program, transformers?: CompileTransformers ) {
-        this.options = options ? options : ts.getDefaultCompilerOptions();
-        this.transformers = transformers || undefined;
-        this.host = host || new CachingCompilerHost( options );
-        this.pastProgram = pastProgram;
+    private program: ts.Program | ts.BuilderProgram; 
+    
+    public getProgram(): ts.Program | null
+    {
+        if ( this.isBuilderProgram( this.program ) )
+        {
+            return this.program.getProgram();
+        }
+        else
+        {
+            return this.program;
+        }
     }
 
-    public getHost(): ts.CompilerHost {
-        return this.host;
+    public static defaultCompileOptions: CompileOptions = {
+        logLevel: 0,
+        verbose: false,
+        typeCheckOnly: false
+    };
+
+    public compileFiles( rootFileNames: ReadonlyArray<string>, compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
+    {
+        compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
+
+        this.options = compilerOptions;
+
+        // TODO: Review
+        // Check for type checking only compile option.
+        // NOTE: overriding noEmit should not change the incremental build state.
+        //       this needs to be reviewed.
+        if ( compileOptions.typeCheckOnly )
+        {
+            this.options.noEmit = true;
+        }
+
+        this.host = new CachingCompilerHost( this.options );
+
+        if ( this.options.Incrementatal )
+        {
+            this.program = ts.createIncrementalProgram(
+                {
+                    rootNames: rootFileNames,
+                    options: this.options,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
+        else
+        {
+            this.program = ts.createProgram(
+                {
+                    rootNames: rootFileNames,
+                    options: compilerOptions,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
     }
 
-    public getProgram(): ts.Program {
-        return this.program;
+    public compileProject( configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult
+    {
+        compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
+
+        const config = TsCore.getProjectConfig( configFilePath );
+
+        if ( config.errors.length > 0 )
+        {
+            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, config.errors );
+        }
+
+        this.options = config.options;
+
+        // TODO: Review
+        // Check for type checking only compile option.
+        // NOTE: overriding noEmit should not change the incremental build state.
+        //       this needs to be reviewed.
+        if ( compileOptions.typeCheckOnly )
+        {
+            this.options.noEmit = true;
+        }
+
+        this.host = new CachingCompilerHost( this.options );
+
+        if ( this.options.Incrementatal )
+        {
+            this.program = ts.createIncrementalProgram(
+                {
+                    rootNames: config.fileNames,
+                    options: this.options,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
+        else
+        {
+            this.program = ts.createProgram(
+                {
+                    rootNames: config.fileNames,
+                    options: config.options,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
     }
 
-    public compile( rootFileNames: ReadonlyArray<string>, oldProgram?: ts.Program ): CompileResult {
-        this.program = ts.createProgram( rootFileNames, this.options, this.host, oldProgram );
-
-        return this.emit();
-    }
-
-    public compileModule( input: string, moduleFileName: string ): CompileResult {
+    public compileModule( input: string, moduleFileName: string, transformers?: CompileTransformers ): CompileResult {
         var defaultGetSourceFile: ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ) => ts.SourceFile;
 
         function getSourceFile( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
@@ -53,17 +155,17 @@ export class Compiler {
 
         const moduleSourceFile = ts.createSourceFile( moduleFileName, input, this.options.target );
 
-        this.program = ts.createProgram( [moduleFileName], this.options, this.host, this.program );
+        this.program = ts.createProgram( [moduleFileName], this.options, this.host );
 
-        return this.emit();
+        return this.emitFiles( this.program, transformers );
     }
 
-    private emit(): CompileResult {
+    private emitFiles( program: EmitFilesProgram, transformers?: CompileTransformers ): CompileResult {
         var diagnosticsPresent: boolean = false;
-        var emitsPresent: boolean = false;
+        var hasEmittedFiles: boolean = false;
         var compileStatus: CompileStatus = CompileStatus.Success;
         var emitOutput: CompileOutput[] = [];
-        var diagnostics = ts.getPreEmitDiagnostics( this.program );
+        var diagnostics = ts.getPreEmitDiagnostics( this.getProgram() );
 
         if ( this.options.noEmitOnError && ( diagnostics.length > 0 ) ) {
             return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
@@ -73,16 +175,14 @@ export class Compiler {
             diagnosticsPresent = true;
         }
 
-        const fileNames = this.program.getRootFileNames();
+        const sourceFiles = program.getSourceFiles();
 
-        for ( const fileNameIndex in fileNames ) {
-            let sourceFile = this.program.getSourceFile( fileNames[fileNameIndex] );
-
-            let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.program, sourceFile );
+        for ( var sourceFile of sourceFiles ) {
+            let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.getProgram(), sourceFile );
 
             if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
                 emitOutput.push( {
-                    fileName: fileNames[fileNameIndex],
+                    fileName: sourceFile.fileName,
                     emitSkipped: true,
                     diagnostics: preEmitDiagnostics
                 } );
@@ -94,10 +194,10 @@ export class Compiler {
                 diagnosticsPresent = true;
             }
 
-            var emitResult = this.fileEmit( fileNames[fileNameIndex], sourceFile );
+            var emitResult = this.fileEmit( sourceFile, transformers );
 
             if ( !emitResult.emitSkipped ) {
-                emitsPresent = true;
+                hasEmittedFiles = true;
             }
 
             if ( emitResult.diagnostics.length > 0 ) {
@@ -110,7 +210,7 @@ export class Compiler {
         }
 
         if ( diagnosticsPresent ) {
-            if ( emitsPresent ) {
+            if ( hasEmittedFiles ) {
                 compileStatus = CompileStatus.DiagnosticsPresent_OutputsGenerated;
             }
             else {
@@ -121,16 +221,16 @@ export class Compiler {
         return new CompileResult( compileStatus, diagnostics, emitOutput );
     }
 
-    private fileEmit( fileName: string, sourceFile: ts.SourceFile ): CompileOutput {
+    private fileEmit( sourceFile: ts.SourceFile, transformers?: CompileTransformers ): CompileOutput {
         var codeFile: CompileFile;
         var mapFile: CompileFile;
         var dtsFile: CompileFile;
 
-        let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.program, sourceFile );
+        let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.getProgram(), sourceFile );
 
         if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
             return {
-                fileName: fileName,
+                fileName: sourceFile.fileName,
                 emitSkipped: true,
                 diagnostics: preEmitDiagnostics
             };
@@ -151,15 +251,20 @@ export class Compiler {
             },
             /*cancellationToken*/ undefined,
             /*emitOnlyDtsFiles*/ false,
-            this.transformers ? this.transformers( this.program ) : undefined );
+            transformers ? transformers( this.getProgram() ) : undefined );
 
         return {
-            fileName: fileName,
+            fileName: sourceFile.fileName,
             emitSkipped: emitResult.emitSkipped,
             codeFile: codeFile,
             dtsFile: dtsFile,
             mapFile: mapFile,
             diagnostics: preEmitDiagnostics.concat( emitResult.diagnostics as ts.Diagnostic[] )
         };
+    }
+
+    private isBuilderProgram( program: ts.Program | ts.BuilderProgram ): program is ts.BuilderProgram
+    {
+        return ( program as ts.BuilderProgram ).getProgram !== undefined;
     }
 }

@@ -23,7 +23,12 @@ export class CachingCompilerHost implements ts.CompilerHost
     constructor( compilerOptions: ts.CompilerOptions )
     {
         this.compilerOptions = compilerOptions;
-        this.baseHost = ts.createIncrementalCompilerHost( this.compilerOptions, this.system );
+
+        // TODO: Review Composite option
+        if ( compilerOptions.incremental /* || compilerOptions.composite */ ) 
+            this.baseHost = ts.createIncrementalCompilerHost( this.compilerOptions, this.system );
+        else
+            this.baseHost = ts.createCompilerHost( this.compilerOptions );
     }
 
     public getOutput = () =>
@@ -48,11 +53,14 @@ export class CachingCompilerHost implements ts.CompilerHost
 
     public writeFile = ( fileName: string, data: string, writeByteOrderMark: boolean, onError?: ( message: string ) => void ) =>
     {
+        // The incremental BuildInfoFile must be output to disk.
         if ( this.isBuildInfoFile( fileName ) )
         {
             return this.baseHost.writeFile( fileName, data, writeByteOrderMark );
         }
-        this.baseHost.writeFile( fileName, data, writeByteOrderMark );
+
+        // TODO: Review changes for release 4.1
+        //this.baseHost.writeFile( fileName, data, writeByteOrderMark );
         this.output[fileName] = data;
     }
 
