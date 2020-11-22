@@ -35,7 +35,8 @@ export class Compiler
     public static defaultCompileOptions: CompileOptions = {
         logLevel: 0,
         verbose: false,
-        typeCheckOnly: false
+        typeCheckOnly: false,
+        emitToDisk: true
     };
 
     public getProgram(): ts.Program | null
@@ -78,7 +79,10 @@ export class Compiler
         return this.compile( config, compileOptions, transformers );
     }
 
-    public compileModule( input: string, moduleFileName: string, transformers?: CompileTransformers ): CompileResult {
+    public compileModule( input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers ): CompileResult
+    {
+        compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
+
         var defaultGetSourceFile: ( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ) => ts.SourceFile;
 
         function getSourceFile( fileName: string, languageVersion: ts.ScriptTarget, onError?: ( message: string ) => void ): ts.SourceFile {
@@ -89,6 +93,10 @@ export class Compiler
             // Use base class to get the all source files other than the input module
             return defaultGetSourceFile( fileName, languageVersion, onError );
         }
+
+        this.options = compilerOptions;
+
+        this.host = new CachingCompilerHost( this.options, compileOptions.emitToDisk );
 
         // Override the compileHost getSourceFile() function to get the module source file
         defaultGetSourceFile = this.host.getSourceFile;
@@ -114,7 +122,7 @@ export class Compiler
             this.options.noEmit = true;
         }
 
-        this.host = new CachingCompilerHost( this.options );
+        this.host = new CachingCompilerHost( this.options, compileOptions.emitToDisk );
 
         if ( this.options.Incrementatal )
         {
@@ -185,8 +193,7 @@ export class Compiler
                 diagnosticsPresent = true;
             }
 
-            // TODO:
-            // TJT: file emit diagnostics should be concatenated?
+            // TODO: TJT: file emit diagnostics should be concatenated?
             emitOutput.push( emitResult );
         }
 

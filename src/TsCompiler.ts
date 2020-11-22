@@ -7,9 +7,7 @@ import { CompileOptions } from "./Compiler/CompileOptions"
 import { CompileOutput } from "./Compiler/CompileOutput"
 import { CompileResult } from "./Compiler/CompileResult"
 import { CompileStatus } from "./Compiler/CompileStatus"
-import { CompileStream } from "./Compiler/CompileStream"
 import { CompileTransformers } from "./Compiler/CompileTransformers"
-import { SolutionBuilderHost } from "./Compiler/SolutionBuilderHost"
 import { SolutionCompiler } from "./Compiler/SolutionCompiler";
 
 // Exported types...
@@ -65,14 +63,15 @@ export namespace TsCompiler
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.
      * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
-    export function compileModule( input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers ): CompileResult
+    export function compileModule( input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         const compiler = new Compiler();
 
-        return compiler.compileModule( input, moduleFileName, transformers );
+        return compiler.compileModule( input, moduleFileName, compilerOptions, compileOptions, transformers );
     }
 
     /**

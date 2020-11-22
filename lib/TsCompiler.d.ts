@@ -40,6 +40,10 @@ interface CompileOptions {
      * Sets type checking only with no output files emitted. Defaults to false.
      */
     typeCheckOnly?: boolean;
+    /**
+    * Sets emit output to disk. Defaults to true.
+    */
+    emitToDisk?: boolean;
 }
 declare type CompileTransformers = ((program?: ts.Program) => ts.CustomTransformers | undefined);
 interface CompileConfig {
@@ -56,7 +60,7 @@ declare class Compiler {
     getProgram(): ts.Program | null;
     compileFiles(rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
     compileProject(configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
-    compileModule(input: string, moduleFileName: string, transformers?: CompileTransformers): CompileResult;
+    compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers): CompileResult;
     compile(config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
     private emitFiles;
     private fileEmit;
@@ -71,7 +75,7 @@ export { CompileConfig };
 export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
-    const version = "4.1.0-dev.2";
+    const version = "4.1.0-dev.3";
     /**
      * Compiles a given array of root file names.
      *
@@ -87,10 +91,11 @@ export declare namespace TsCompiler {
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.
      * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
-    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, transformers?: CompileTransformers): CompileResult;
+    function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers): CompileResult;
     /**
      * compiles a project from the provided Typescript configuration file.
      *

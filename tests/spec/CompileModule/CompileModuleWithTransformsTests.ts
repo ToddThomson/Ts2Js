@@ -2,20 +2,20 @@
 import { expect } from "chai"
 import * as identity from "../../transforms/IdentityTransform"
 import * as empty from "../../transforms/EmptyTransform"
-import { TsCompiler, CompileTransformers, CompileStatus, CompileResult } from "../../../lib/TsCompiler"
+import { TsCompiler, CompileOptions, CompileTransformers, CompileStatus, CompileResult } from "../../../lib/TsCompiler"
 
 describe( "Compile Module With Transforms", () => {
 
-    function compilesModuleCorrectly( name: string, input: string, options: ts.CompilerOptions, transformers?: CompileTransformers ) {
+    function compilesModuleCorrectly( name: string, input: string, compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers ) {
         describe( name, () => {
             let moduleName: string;
             let compileResult: CompileResult;
-            options = options || {};
+            compilerOptions = compilerOptions || {};
             //transformers = transformers || {}; 
 
-            moduleName = "compileModule/" + name.replace( /[^a-z0-9\-. ]/ig, "" ) + ( options.jsx ? ts.Extension.Tsx : ts.Extension.Ts );
+            moduleName = "compileModule/" + name.replace( /[^a-z0-9\-. ]/ig, "" ) + ( compilerOptions.jsx ? ts.Extension.Tsx : ts.Extension.Ts );
 
-            compileResult = TsCompiler.compileModule( input, moduleName, options, transformers );
+            compileResult = TsCompiler.compileModule( input, moduleName, compilerOptions, compileOptions, transformers );
 
             it( "Correct errors for " + moduleName, () => {
                 expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
@@ -27,6 +27,7 @@ describe( "Compile Module With Transforms", () => {
         {
             module: ts.ModuleKind.CommonJS,
         },
+        { verbose: true },
         () => ({
             before: [identity.getTransform()]
         } ) );
@@ -35,6 +36,7 @@ describe( "Compile Module With Transforms", () => {
         {
             module: ts.ModuleKind.CommonJS,
         },
+        { verbose: true },
         () => ({
             before: [empty.getTransform()]
         } ) );

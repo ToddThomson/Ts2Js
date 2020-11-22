@@ -12,17 +12,18 @@ export class CachingCompilerHost implements ts.CompilerHost
 {
     protected system: ts.System = ts.sys;
     private output: ts.MapLike<string> = {};
-
     private dirExistsCache: ts.MapLike<boolean> = {};
     private fileExistsCache: ts.MapLike<boolean> = {};
     private fileReadCache: ts.MapLike<string> = {};
 
     protected compilerOptions: ts.CompilerOptions;
     protected baseHost: ts.CompilerHost;
+    protected outputToDisk: boolean;
 
-    constructor( compilerOptions: ts.CompilerOptions )
+    constructor( compilerOptions: ts.CompilerOptions, outputToDisk: boolean = true )
     {
         this.compilerOptions = compilerOptions;
+        this.outputToDisk = outputToDisk;
 
         // TODO: Review Composite option
         if ( compilerOptions.incremental /* || compilerOptions.composite */ ) 
@@ -59,8 +60,9 @@ export class CachingCompilerHost implements ts.CompilerHost
             return this.baseHost.writeFile( fileName, data, writeByteOrderMark );
         }
 
-        // TODO: Review changes for release 4.1
-        //this.baseHost.writeFile( fileName, data, writeByteOrderMark );
+        if ( this.outputToDisk )
+            this.baseHost.writeFile( fileName, data, writeByteOrderMark );
+
         this.output[fileName] = data;
     }
 

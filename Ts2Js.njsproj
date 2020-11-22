@@ -69,7 +69,6 @@
       <SubType>Code</SubType>
     </TypeScriptCompile>
     <TypeScriptCompile Include="src\Compiler\CompileStatus.ts" />
-    <TypeScriptCompile Include="src\Compiler\CompileStream.ts" />
     <TypeScriptCompile Include="src\Compiler\CachingCompilerHost.ts" />
     <TypeScriptCompile Include="src\Compiler\Compiler.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileFile.ts" />
