@@ -1,8 +1,8 @@
 ﻿import * as ts from "typescript"
 import { TsCore } from "../../TsToolsCommon/src/Typescript/Core"
-import { CachingCompilerHost } from "./Compiler/CachingCompilerHost"
 import { Compiler } from "./Compiler/Compiler"
 import { CompileFile } from "./Compiler/CompileFile"
+import { CompileConfig } from "./Compiler/CompileConfig"
 import { CompileOptions } from "./Compiler/CompileOptions"
 import { CompileOutput } from "./Compiler/CompileOutput"
 import { CompileResult } from "./Compiler/CompileResult"
@@ -13,13 +13,12 @@ import { SolutionBuilderHost } from "./Compiler/SolutionBuilderHost"
 import { SolutionCompiler } from "./Compiler/SolutionCompiler";
 
 // Exported types...
-export { CachingCompilerHost }
 export { CompileFile }
 export { CompileOutput }
 export { CompileStatus }
 export { CompileResult }
-export { CompileStream }
 export { CompileTransformers }
+export { CompileConfig }
 export { CompileOptions }
 export { Compiler };
 
@@ -43,7 +42,7 @@ export namespace TsSolutionBuilder
 
 export namespace TsCompiler
 {
-    export const version = "4.1.0-dev.2";
+    export const version = "4.1.0-dev.3";
 
     /**
      * Compiles a given array of root file names.

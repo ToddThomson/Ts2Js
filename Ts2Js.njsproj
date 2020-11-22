@@ -59,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <TypeScriptCompile Include="lib\TsCompiler.d.ts" />
+    <TypeScriptCompile Include="src\Compiler\CompileConfig.ts">
+      <SubType>Code</SubType>
+    </TypeScriptCompile>
     <TypeScriptCompile Include="src\Compiler\SolutionBuilderHost.ts" />
     <TypeScriptCompile Include="src\Compiler\SolutionCompiler.ts" />
     <TypeScriptCompile Include="src\Compiler\CompilerError.ts" />

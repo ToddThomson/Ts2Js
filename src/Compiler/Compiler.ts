@@ -5,10 +5,12 @@ import { CompileResult } from "./CompileResult"
 import { CompileStatus } from "./CompileStatus"
 import { CompileOptions } from "./CompileOptions"
 import { CompileTransformers } from "./CompileTransformers"
+import { CompileConfig } from "./CompileConfig"
 import { CachingCompilerHost } from "./CachingCompilerHost"
 import { TsCore } from "../../../TsToolsCommon/src/Typescript/Core"
 import { Utils } from "../../../TsToolsCommon/src/Utils/Utilities"
 
+// TJT: Move to common types
 interface EmitFilesProgram
 {
     getCurrentDirectory(): string;
@@ -29,7 +31,13 @@ export class Compiler
     private options: ts.CompilerOptions;
     private host: ts.CompilerHost;
     private program: ts.Program | ts.BuilderProgram; 
-    
+
+    public static defaultCompileOptions: CompileOptions = {
+        logLevel: 0,
+        verbose: false,
+        typeCheckOnly: false
+    };
+
     public getProgram(): ts.Program | null
     {
         if ( this.isBuilderProgram( this.program ) )
@@ -42,54 +50,21 @@ export class Compiler
         }
     }
 
-    public static defaultCompileOptions: CompileOptions = {
-        logLevel: 0,
-        verbose: false,
-        typeCheckOnly: false
-    };
-
-    public compileFiles( rootFileNames: ReadonlyArray<string>, compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
+    public compileFiles( rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
 
-        this.options = compilerOptions;
-
-        // TODO: Review
-        // Check for type checking only compile option.
-        // NOTE: overriding noEmit should not change the incremental build state.
-        //       this needs to be reviewed.
-        if ( compileOptions.typeCheckOnly )
-        {
-            this.options.noEmit = true;
-        }
-
-        this.host = new CachingCompilerHost( this.options );
-
-        if ( this.options.Incrementatal )
-        {
-            this.program = ts.createIncrementalProgram(
-                {
-                    rootNames: rootFileNames,
-                    options: this.options,
-                    host: this.host
-                } );
-
-            return this.emitFiles( this.program, transformers );
-        }
-        else
-        {
-            this.program = ts.createProgram(
-                {
-                    rootNames: rootFileNames,
-                    options: compilerOptions,
-                    host: this.host
-                } );
-
-            return this.emitFiles( this.program, transformers );
-        }
+        return this.compile(
+            {
+                fileNames: rootFileNames,
+                options: compilerOptions,
+                errors: []
+            },
+            compileOptions,
+            transformers );
     }
 
-    public compileProject( configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult
+    public compileProject( configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
 
@@ -100,41 +75,7 @@ export class Compiler
             return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, config.errors );
         }
 
-        this.options = config.options;
-
-        // TODO: Review
-        // Check for type checking only compile option.
-        // NOTE: overriding noEmit should not change the incremental build state.
-        //       this needs to be reviewed.
-        if ( compileOptions.typeCheckOnly )
-        {
-            this.options.noEmit = true;
-        }
-
-        this.host = new CachingCompilerHost( this.options );
-
-        if ( this.options.Incrementatal )
-        {
-            this.program = ts.createIncrementalProgram(
-                {
-                    rootNames: config.fileNames,
-                    options: this.options,
-                    host: this.host
-                } );
-
-            return this.emitFiles( this.program, transformers );
-        }
-        else
-        {
-            this.program = ts.createProgram(
-                {
-                    rootNames: config.fileNames,
-                    options: config.options,
-                    host: this.host
-                } );
-
-            return this.emitFiles( this.program, transformers );
-        }
+        return this.compile( config, compileOptions, transformers );
     }
 
     public compileModule( input: string, moduleFileName: string, transformers?: CompileTransformers ): CompileResult {
@@ -158,6 +99,46 @@ export class Compiler
         this.program = ts.createProgram( [moduleFileName], this.options, this.host );
 
         return this.emitFiles( this.program, transformers );
+    }
+
+    public compile( config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers  ): CompileResult
+    {
+        this.options = config.options;
+
+        // TODO: Review
+        // Check for type checking only compile option.
+        // NOTE: overriding noEmit should not change the incremental build state.
+        //       this needs to be reviewed.
+        if ( compileOptions.typeCheckOnly )
+        {
+            this.options.noEmit = true;
+        }
+
+        this.host = new CachingCompilerHost( this.options );
+
+        if ( this.options.Incrementatal )
+        {
+            this.program = ts.createIncrementalProgram(
+                {
+                    rootNames: config.fileNames,
+                    options: this.options,
+                    projectReferences: config.projectReferences,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
+        else
+        {
+            this.program = ts.createProgram(
+                {
+                    rootNames: config.fileNames,
+                    options: config.options,
+                    host: this.host
+                } );
+
+            return this.emitFiles( this.program, transformers );
+        }
     }
 
     private emitFiles( program: EmitFilesProgram, transformers?: CompileTransformers ): CompileResult {
