@@ -56,11 +56,52 @@ declare class Compiler {
     private options;
     private host;
     private program;
+    /**
+     * The default compile options.
+     */
     static defaultCompileOptions: CompileOptions;
-    getProgram(): ts.Program | null;
+    /**
+     * Gets the compiler compilation unit program.
+     * @returns A {@link ts.Program} or undefined.
+     */
+    getProgram(): ts.Program | undefined;
+    /**
+     * Compiles a given array of root file names with the supplied options and transformers.
+     *
+     * @param rootFileNames The root files used to determine the compilation files.
+     * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
     compileFiles(rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
+    /**
+     * Compiles a project from the provided Typescript configuration file path.
+     *
+     * @param configFilePath A path to the Typescript json configuration file.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
     compileProject(configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
+    /**
+    * Compiles an input string with the supplied options and transformers.
+    *
+    * @param input A string providing the typescript source.
+    * @param moduleFileName The module name.
+    * @param compilerOptions The {@link ts.CompilerOptions} to use.
+    * @param compileOptions The {@link CompileOptions} to use.
+    * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+    * @returns A {@link CompileResult}
+    */
     compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers): CompileResult;
+    /**
+     * Compiles from a the provided compile configuration and options.
+     * @param config The {@link CompileConfig} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+    */
     compile(config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
     private emitFiles;
     private fileEmit;
@@ -75,18 +116,19 @@ export { CompileConfig };
 export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
-    const version = "4.1.0-dev.3";
+    const version = "4.1.0-dev.4";
     /**
-     * Compiles a given array of root file names.
+     * Compiles a given array of root file names with the supplied options and transformers.
      *
      * @param rootFileNames The root files used to determine the compilation files.
      * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */
     function compileFiles(rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
     /**
-     * Compiles an input string.
+     * Compiles an input string with the supplied options and transformers.
      *
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.
@@ -97,9 +139,10 @@ export declare namespace TsCompiler {
      */
     function compileModule(input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers): CompileResult;
     /**
-     * compiles a project from the provided Typescript configuration file.
+     * Compiles a project from the provided Typescript configuration file.
      *
      * @param configFilePath A path to the Typescript json configuration file.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */

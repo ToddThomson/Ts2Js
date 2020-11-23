@@ -100,6 +100,9 @@
       <SubType>Code</SubType>
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
+    <TypeScriptCompile Include="tests\spec\CompilerTest\ProgramTests.ts" />
+    <TypeScriptCompile Include="tests\spec\CompilerTest\ProjectTests.ts" />
+    <TypeScriptCompile Include="tests\spec\TypeChecking\TypeCheckProjectTests.ts" />
     <TypeScriptCompile Include="tests\transforms\EmptyTransform.ts">
       <SubType>Code</SubType>
     </TypeScriptCompile>
@@ -121,6 +124,8 @@
     <Folder Include="tests\spec\BuildProject\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />
+    <Folder Include="tests\spec\CompilerTest\" />
+    <Folder Include="tests\spec\TypeChecking\" />
     <Folder Include="tests\transforms\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />

@@ -40,13 +40,14 @@ export namespace TsSolutionBuilder
 
 export namespace TsCompiler
 {
-    export const version = "4.1.0-dev.3";
+    export const version = "4.1.0-dev.4";
 
     /**
-     * Compiles a given array of root file names.
+     * Compiles a given array of root file names with the supplied options and transformers.
      * 
      * @param rootFileNames The root files used to determine the compilation files.
      * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult} 
      */
@@ -58,7 +59,7 @@ export namespace TsCompiler
     }
 
     /**
-     * Compiles an input string.
+     * Compiles an input string with the supplied options and transformers.
      * 
      * @param input A string providing the typescript source.
      * @param moduleFileName The module name.
@@ -75,9 +76,10 @@ export namespace TsCompiler
     }
 
     /**
-     * compiles a project from the provided Typescript configuration file.
+     * Compiles a project from the provided Typescript configuration file.
      * 
      * @param configFilePath A path to the Typescript json configuration file.
+     * @param compileOptions The {@link CompileOptions} to use.
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
      */

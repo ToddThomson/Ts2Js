@@ -32,6 +32,9 @@ export class Compiler
     private host: ts.CompilerHost;
     private program: ts.Program | ts.BuilderProgram; 
 
+    /**
+     * The default compile options. 
+     */
     public static defaultCompileOptions: CompileOptions = {
         logLevel: 0,
         verbose: false,
@@ -39,7 +42,11 @@ export class Compiler
         emitToDisk: true
     };
 
-    public getProgram(): ts.Program | null
+    /**
+     * Gets the compiler compilation unit program.
+     * @returns A {@link ts.Program} or undefined.
+     */
+    public getProgram(): ts.Program | undefined
     {
         if ( this.isBuilderProgram( this.program ) )
         {
@@ -51,6 +58,15 @@ export class Compiler
         }
     }
 
+    /**
+     * Compiles a given array of root file names with the supplied options and transformers.
+     *
+     * @param rootFileNames The root files used to determine the compilation files.
+     * @param compilerOptions The {@link ts.CompilerOptions} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
     public compileFiles( rootFileNames: string[], compilerOptions: ts.CompilerOptions, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
@@ -65,6 +81,14 @@ export class Compiler
             transformers );
     }
 
+    /**
+     * Compiles a project from the provided Typescript configuration file path.
+     *
+     * @param configFilePath A path to the Typescript json configuration file.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+     */
     public compileProject( configFilePath: string, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
@@ -79,6 +103,16 @@ export class Compiler
         return this.compile( config, compileOptions, transformers );
     }
 
+    /**
+    * Compiles an input string with the supplied options and transformers.
+    *
+    * @param input A string providing the typescript source.
+    * @param moduleFileName The module name.
+    * @param compilerOptions The {@link ts.CompilerOptions} to use.
+    * @param compileOptions The {@link CompileOptions} to use.
+    * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+    * @returns A {@link CompileResult}
+    */
     public compileModule( input: string, moduleFileName: string, compilerOptions: ts.CompilerOptions, compileOptions: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         compileOptions = compileOptions ? Utils.extend( compileOptions, Compiler.defaultCompileOptions ) : Compiler.defaultCompileOptions;
@@ -109,6 +143,13 @@ export class Compiler
         return this.emitFiles( this.program, transformers );
     }
 
+    /**
+     * Compiles from a the provided compile configuration and options.
+     * @param config The {@link CompileConfig} to use.
+     * @param compileOptions The {@link CompileOptions} to use.
+     * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
+     * @returns A {@link CompileResult}
+    */
     public compile( config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers  ): CompileResult
     {
         this.options = config.options;
@@ -253,6 +294,11 @@ export class Compiler
 
     private isBuilderProgram( program: ts.Program | ts.BuilderProgram ): program is ts.BuilderProgram
     {
-        return ( program as ts.BuilderProgram ).getProgram !== undefined;
+        if ( program )
+        {
+            return ( program as ts.BuilderProgram ).getProgram !== undefined;
+        }
+
+        return false;
     }
 }
