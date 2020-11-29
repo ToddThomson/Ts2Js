@@ -24,7 +24,12 @@ describe( "Compiler() getProgram() tests", () => {
                 expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
                 expect( compileResult.getErrors() ).to.have.length( 0 );
                 var output = compileResult.getOutput();
-                expect( output ).to.have.length.greaterThan( 0 );
+                if ( compileOptions?.typeCheckOnly ) {
+                    expect( output ).to.have.length( 0 );
+                }
+                else {
+                    expect( output ).to.have.length.greaterThan( 0 );
+                }
             } );
 
             it( "getProgram() after compile is defined", () =>

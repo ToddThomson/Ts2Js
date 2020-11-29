@@ -1,6 +1,4 @@
-﻿import * as ts from "typescript"
-import { expect } from "chai"
-import * as mocha from "mocha"
+﻿import { expect } from "chai"
 import { TsCompiler, CompileOptions, CompileTransformers, CompileResult, CompileStatus } from "../../../src/TsCompiler"
 
 describe( "Compile Project", () => {

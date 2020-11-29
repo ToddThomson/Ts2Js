@@ -18,7 +18,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>0400168f-4110-4068-a889-a7db636b7c24</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>tests\spec\BuildProject\BuildProjectTests.ts</StartupFile>
+    <StartupFile>tests\spec\SolutionBuilder\BuildProjectTests.ts</StartupFile>
     <StartWebBrowser>False</StartWebBrowser>
     <SearchPath>
     </SearchPath>
@@ -49,6 +49,7 @@
     <Content Include="gulpfile.js" />
     <Content Include="lib\TsCompiler.js" />
     <Content Include="LICENSE" />
+    <Content Include="package-lock.json" />
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="src\tsconfig.json" />
@@ -76,7 +77,7 @@
     <TypeScriptCompile Include="src\Compiler\CompileResult.ts" />
     <TypeScriptCompile Include="src\Compiler\CompileOptions.ts" />
     <TypeScriptCompile Include="src\TsCompiler.ts" />
-    <TypeScriptCompile Include="tests\spec\BuildProject\BuildProjectTests.ts">
+    <TypeScriptCompile Include="tests\spec\SolutionBuilder\BuildProjectTests.ts">
       <TestFramework>Mocha</TestFramework>
     </TypeScriptCompile>
     <TypeScriptCompile Include="tests\spec\CompileModule\CompileModuleWithTransformsTests.ts">
@@ -121,7 +122,7 @@
     <Folder Include="tests\spec\CompileProject\" />
     <Folder Include="tests\spec\" />
     <Folder Include="tests\spec\CompileFiles\" />
-    <Folder Include="tests\spec\BuildProject\" />
+    <Folder Include="tests\spec\SolutionBuilder\" />
     <Folder Include="tests\projects\" />
     <Folder Include="tests\projects\simple\" />
     <Folder Include="tests\spec\CompilerTest\" />

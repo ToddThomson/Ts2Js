@@ -1,7 +1,6 @@
 ﻿import * as ts from "typescript"
 import { TsCore } from "../../TsToolsCommon/src/Typescript/Core"
 import { Compiler } from "./Compiler/Compiler"
-import { CompileFile } from "./Compiler/CompileFile"
 import { CompileConfig } from "./Compiler/CompileConfig"
 import { CompileOptions } from "./Compiler/CompileOptions"
 import { CompileOutput } from "./Compiler/CompileOutput"
@@ -11,7 +10,6 @@ import { CompileTransformers } from "./Compiler/CompileTransformers"
 import { SolutionCompiler } from "./Compiler/SolutionCompiler";
 
 // Exported types...
-export { CompileFile }
 export { CompileOutput }
 export { CompileStatus }
 export { CompileResult }
@@ -40,7 +38,7 @@ export namespace TsSolutionBuilder
 
 export namespace TsCompiler
 {
-    export const version = "4.1.0-dev.4";
+    export const version = "4.1.0-dev.5";
 
     /**
      * Compiles a given array of root file names with the supplied options and transformers.

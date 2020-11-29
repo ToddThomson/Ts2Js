@@ -1,16 +1,7 @@
 import * as ts from "typescript";
-interface CompileFile {
-    fileName: string;
-    data: string;
-    writeByteOrderMark: boolean;
-}
 interface CompileOutput {
     fileName: string;
-    emitSkipped: boolean;
-    diagnostics?: ReadonlyArray<ts.Diagnostic>;
-    codeFile?: CompileFile;
-    dtsFile?: CompileFile;
-    mapFile?: CompileFile;
+    data: string;
 }
 declare enum CompileStatus {
     Success = 0,
@@ -28,10 +19,6 @@ declare class CompileResult {
     succeeded(): boolean;
 }
 interface CompileOptions {
-    /**
-     * Sets log level. Defaults to 0
-     */
-    logLevel?: number;
     /**
      * Sets verbose output. Defaults to false.
      */
@@ -56,12 +43,14 @@ declare class Compiler {
     private options;
     private host;
     private program;
+    private preEmitTime;
+    private emitTime;
     /**
      * The default compile options.
      */
     static defaultCompileOptions: CompileOptions;
     /**
-     * Gets the compiler compilation unit program.
+     * Gets the compiler {@link ts.Program} compilation unit.
      * @returns A {@link ts.Program} or undefined.
      */
     getProgram(): ts.Program | undefined;
@@ -103,11 +92,12 @@ declare class Compiler {
      * @returns A {@link CompileResult}
     */
     compile(config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers): CompileResult;
-    private emitFiles;
-    private fileEmit;
+    private emit;
     private isBuilderProgram;
+    private reportStatistics;
+    private compiledLines;
+    private getLineStarts;
 }
-export { CompileFile };
 export { CompileOutput };
 export { CompileStatus };
 export { CompileResult };
@@ -116,7 +106,7 @@ export { CompileConfig };
 export { CompileOptions };
 export { Compiler };
 export declare namespace TsCompiler {
-    const version = "4.1.0-dev.4";
+    const version = "4.1.0-dev.5";
     /**
      * Compiles a given array of root file names with the supplied options and transformers.
      *

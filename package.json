@@ -1,8 +1,8 @@
 {
   "name": "ts2js",
-  "version": "4.1.0-dev.4",
+  "version": "4.1.0-dev.5",
   "author": "Todd Thomson <todd.thomson@me.com>",
-  "description": "A simple, fast, incremental Typescript in-memory compiler supporting custom transformers.",
+  "description": "A simple, fast, incremental Typescript compiler supporting custom transformers.",
   "license": "MIT",
   "main": "./lib/TsCompiler.js",
   "types": "./lib/TsCompiler.d.ts",
@@ -11,7 +11,8 @@
     "node": ">= 14.0.0"
   },
   "dependencies": {
-    "@types/node": "^14.14.9",
+    "@types/node": "^14.14.10",
+    "chalk": "^4.1.0",
     "typescript": "^4.1.2"
   },
   "devDependencies": {

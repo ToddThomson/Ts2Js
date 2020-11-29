@@ -1,11 +1,6 @@
 ﻿export interface CompileOptions
 {
     /**
-     * Sets log level. Defaults to 0
-     */
-    logLevel?: number;
-
-    /**
      * Sets verbose output. Defaults to false.
      */
     verbose?: boolean;
@@ -19,5 +14,4 @@
     * Sets emit output to disk. Defaults to true.
     */
     emitToDisk?: boolean;
-
 }

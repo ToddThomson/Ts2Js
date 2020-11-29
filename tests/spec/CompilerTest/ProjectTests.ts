@@ -10,20 +10,24 @@ describe( "Compiler API ", () => {
             let compileResult: CompileResult = compiler.compileProject(
                 projectConfigPath, compileOptions, transformers );
 
-            it ("")
-
             it( "Compile status is successful", () => {
                 expect( compileResult.getStatus() ).to.equal( CompileStatus.Success );
                 expect( compileResult.getErrors() ).to.have.length( 0 );
                 var output = compileResult.getOutput();
-                expect( output ).to.have.length.greaterThan( 0 );
+                if ( compileOptions?.typeCheckOnly ) {
+                    expect( output ).to.have.length( 0 );
+                }
+                else {
+                    expect( output ).to.have.length.greaterThan( 0 );
+                }
             } );
         } );
     }
 
-    compileProject( "CompileProject", "./tests/projects/simple" );
+    compileProject( "compileProject()", "./tests/projects/simple" );
+
     compileProject(
-        "CompileProject ",
+        "compileProject() with typeCheckOnly",
         "./tests/projects/simple",
         {
             verbose: true,

@@ -1,4 +1,5 @@
 ﻿import * as ts from "typescript"
+import * as chalk from "chalk"
 import { CompileFile } from "./CompileFile"
 import { CompileOutput } from "./CompileOutput"
 import { CompileResult } from "./CompileResult"
@@ -7,6 +8,8 @@ import { CompileOptions } from "./CompileOptions"
 import { CompileTransformers } from "./CompileTransformers"
 import { CompileConfig } from "./CompileConfig"
 import { CachingCompilerHost } from "./CachingCompilerHost"
+import { StatisticsReporter } from "../../../TsToolsCommon/src/Reporting/StatisticsReporter"
+import { Logger } from "../../../TsToolsCommon/src/Reporting/Logger"
 import { TsCore } from "../../../TsToolsCommon/src/Typescript/Core"
 import { Utils } from "../../../TsToolsCommon/src/Utils/Utilities"
 
@@ -29,21 +32,24 @@ interface EmitFilesProgram
 export class Compiler
 {
     private options: ts.CompilerOptions;
-    private host: ts.CompilerHost;
+    private host: CachingCompilerHost;
     private program: ts.Program | ts.BuilderProgram; 
+
+    private preEmitTime: number = 0;
+    private emitTime: number = 0;
+    //private compileTime: number = 0;
 
     /**
      * The default compile options. 
      */
     public static defaultCompileOptions: CompileOptions = {
-        logLevel: 0,
         verbose: false,
         typeCheckOnly: false,
         emitToDisk: true
     };
 
     /**
-     * Gets the compiler compilation unit program.
+     * Gets the compiler {@link ts.Program} compilation unit.
      * @returns A {@link ts.Program} or undefined.
      */
     public getProgram(): ts.Program | undefined
@@ -140,7 +146,7 @@ export class Compiler
 
         this.program = ts.createProgram( [moduleFileName], this.options, this.host );
 
-        return this.emitFiles( this.program, transformers );
+        return this.emit( this.program, transformers );
     }
 
     /**
@@ -150,7 +156,7 @@ export class Compiler
      * @param transformers An optional {@link CompileTransforms} type specifing custom transforms.
      * @returns A {@link CompileResult}
     */
-    public compile( config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers  ): CompileResult
+    public compile( config: CompileConfig, compileOptions?: CompileOptions, transformers?: CompileTransformers ): CompileResult
     {
         this.options = config.options;
 
@@ -158,15 +164,26 @@ export class Compiler
         // Check for type checking only compile option.
         // NOTE: overriding noEmit should not change the incremental build state.
         //       this needs to be reviewed.
-        if ( compileOptions.typeCheckOnly )
-        {
+        if ( compileOptions.typeCheckOnly ) {
             this.options.noEmit = true;
         }
 
+        if ( this.options.verbose ) {
+            if ( compileOptions.typeCheckOnly ) {
+                Logger.log( "Type checking with:" );
+            }
+            else {
+                Logger.log( "Compiling with:" );
+            }
+
+            Logger.log( "TypeScript version: ", ts.version );
+        }
+
+        this.preEmitTime = new Date().getTime();
+
         this.host = new CachingCompilerHost( this.options, compileOptions.emitToDisk );
 
-        if ( this.options.Incrementatal )
-        {
+        if ( this.options.Incrementatal ) {
             this.program = ts.createIncrementalProgram(
                 {
                     rootNames: config.fileNames,
@@ -174,68 +191,57 @@ export class Compiler
                     projectReferences: config.projectReferences,
                     host: this.host
                 } );
-
-            return this.emitFiles( this.program, transformers );
         }
-        else
-        {
+        else {
             this.program = ts.createProgram(
                 {
                     rootNames: config.fileNames,
                     options: config.options,
                     host: this.host
                 } );
-
-            return this.emitFiles( this.program, transformers );
         }
+        this.preEmitTime = new Date().getTime() - this.preEmitTime;
+        this.emitTime = new Date().getTime();
+
+        let compileResult = this.emit( this.program, transformers );
+
+        this.emitTime = new Date().getTime() - this.emitTime;
+
+        if ( this.options.verbose ) {
+            this.reportStatistics();
+        }
+
+        return compileResult;
     }
 
-    private emitFiles( program: EmitFilesProgram, transformers?: CompileTransformers ): CompileResult {
+    private emit( program: EmitFilesProgram, transformers?: CompileTransformers ): CompileResult {
         var diagnosticsPresent: boolean = false;
         var hasEmittedFiles: boolean = false;
         var compileStatus: CompileStatus = CompileStatus.Success;
         var emitOutput: CompileOutput[] = [];
-        var diagnostics = ts.getPreEmitDiagnostics( this.getProgram() );
 
-        if ( this.options.noEmitOnError && ( diagnostics.length > 0 ) ) {
-            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
-        }
+        var preEmitDiagnostics = ts.getPreEmitDiagnostics( this.getProgram() );
 
-        if ( diagnostics.length > 0 ) {
+        if ( preEmitDiagnostics.length > 0 ) {
             diagnosticsPresent = true;
         }
 
-        const sourceFiles = program.getSourceFiles();
+        if ( this.options.noEmitOnError && diagnosticsPresent ) {
+            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, preEmitDiagnostics );
+        }
 
-        for ( var sourceFile of sourceFiles ) {
-            let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.getProgram(), sourceFile );
+        const emitResult = program.emit(
+            undefined /* sourceFile */,
+            undefined /* writeFile */,
+            /*cancellationToken*/ undefined,
+            /*emitOnlyDtsFiles*/ false,
+            transformers ? transformers( this.getProgram() ) : undefined );
 
-            if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
-                emitOutput.push( {
-                    fileName: sourceFile.fileName,
-                    emitSkipped: true,
-                    diagnostics: preEmitDiagnostics
-                } );
+        const diagnostics = ts.sortAndDeduplicateDiagnostics( [...preEmitDiagnostics, ...emitResult.diagnostics] );
 
-                continue;
-            }
-
-            if ( preEmitDiagnostics.length > 0 ) {
-                diagnosticsPresent = true;
-            }
-
-            var emitResult = this.fileEmit( sourceFile, transformers );
-
-            if ( !emitResult.emitSkipped ) {
-                hasEmittedFiles = true;
-            }
-
-            if ( emitResult.diagnostics.length > 0 ) {
-                diagnosticsPresent = true;
-            }
-
-            // TODO: TJT: file emit diagnostics should be concatenated?
-            emitOutput.push( emitResult );
+        // If the emitter didn't emit anything, then we're done
+        if ( emitResult.emitSkipped ) {
+            return new CompileResult( CompileStatus.DiagnosticsPresent_OutputsSkipped, diagnostics );
         }
 
         if ( diagnosticsPresent ) {
@@ -247,51 +253,23 @@ export class Compiler
             }
         }
 
-        return new CompileResult( compileStatus, diagnostics, emitOutput );
-    }
+        // Copy the compilation output...
+        const fileOutput = this.host.getOutput();
 
-    private fileEmit( sourceFile: ts.SourceFile, transformers?: CompileTransformers ): CompileOutput {
-        var codeFile: CompileFile;
-        var mapFile: CompileFile;
-        var dtsFile: CompileFile;
+        for ( var fileName in fileOutput ) {
+            var fileData = fileOutput[ fileName ];
 
-        let preEmitDiagnostics = ts.getPreEmitDiagnostics( this.getProgram(), sourceFile );
-
-        if ( this.options.noEmitOnError && ( preEmitDiagnostics.length > 0 ) ) {
-            return {
-                fileName: sourceFile.fileName,
-                emitSkipped: true,
-                diagnostics: preEmitDiagnostics
+            var outputFile: CompileOutput = {
+                fileName: fileName,
+                data: fileData
             };
+
+            emitOutput.push( outputFile );
         }
 
-        const emitResult = this.program.emit(
-            sourceFile,
-            ( fileName: string, data: string, writeByteOrderMark: boolean ) => {
-                var file: CompileFile = { fileName: fileName, data: data, writeByteOrderMark: writeByteOrderMark };
-
-                if ( TsCore.fileExtensionIs( fileName, ".js" ) || TsCore.fileExtensionIs( fileName, ".jsx" ) ) {
-                    codeFile = file;
-                } else if ( TsCore.fileExtensionIs( fileName, "d.ts" ) ) {
-                    dtsFile = file;
-                } else if ( TsCore.fileExtensionIs( fileName, ".map" ) ) {
-                    mapFile = file;
-                }
-            },
-            /*cancellationToken*/ undefined,
-            /*emitOnlyDtsFiles*/ false,
-            transformers ? transformers( this.getProgram() ) : undefined );
-
-        return {
-            fileName: sourceFile.fileName,
-            emitSkipped: emitResult.emitSkipped,
-            codeFile: codeFile,
-            dtsFile: dtsFile,
-            mapFile: mapFile,
-            diagnostics: preEmitDiagnostics.concat( emitResult.diagnostics as ts.Diagnostic[] )
-        };
+        return new CompileResult( compileStatus, diagnostics, emitOutput );
     }
-
+    
     private isBuilderProgram( program: ts.Program | ts.BuilderProgram ): program is ts.BuilderProgram
     {
         if ( program )
@@ -300,5 +278,29 @@ export class Compiler
         }
 
         return false;
+    }
+
+    private reportStatistics() {
+        let statisticsReporter = new StatisticsReporter();
+
+        statisticsReporter.reportCount( "Files", this.program.getSourceFiles().length );
+        statisticsReporter.reportCount( "Lines", this.compiledLines() );
+        statisticsReporter.reportTime( "Pre-emit time", this.preEmitTime );
+        statisticsReporter.reportTime( "Emit time", this.emitTime );
+    }
+
+    private compiledLines(): number {
+        var count = 0;
+        Utils.forEach( this.program.getSourceFiles(), file => {
+            if ( !file.isDeclarationFile ) {
+                count += this.getLineStarts( file ).length;
+            }
+        } );
+
+        return count;
+    }
+
+    private getLineStarts( sourceFile: ts.SourceFile ): ReadonlyArray<number> {
+        return sourceFile.getLineStarts();
     }
 }
